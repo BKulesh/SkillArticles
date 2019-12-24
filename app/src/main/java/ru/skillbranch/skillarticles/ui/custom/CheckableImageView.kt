@@ -7,7 +7,7 @@ import android.widget.Checkable
 import android.widget.ImageView
 import java.security.AccessControlContext
 
-class ChekableImageView @JvmOverloads constructor(
+class CheckableImageView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet?=null,
     defStyleAttr:Int=0
