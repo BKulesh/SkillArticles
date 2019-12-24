@@ -23,13 +23,21 @@ abstract class BaseViewModel<T>(initState:T): ViewModel(){
         state.observe(owner, Observer{onChanged(it!!)})
     }
 
-    class ViewModelFactory(private val params: String): ViewModelProvider.Factory{
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(ArticleViewModel::class<T>.java)) {
-                return ArticleViewModel(params) as T
-            }
-            throw IllegalArgumentException("Unknown ViewModel class")
+    protected fun <S> subscribeOnDataSource(
+        source: LiveData<S>,
+        onChanged: (newValue: S,currentState:T) -> T?
+    ){
+        state.addSource(source) {
+            state.value=onChanged(it,currentState)?: return@addSource
         }
     }
+}
 
+class ViewModelFactory(private val params: String): ViewModelProvider.Factory{
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(ArticleViewModel::class.java)) {
+            return ArticleViewModel(params) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
 }
