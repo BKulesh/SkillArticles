@@ -13,10 +13,7 @@ import kotlinx.android.synthetic.main.layout_bottombar.*
 import kotlinx.android.synthetic.main.layout_submenu.*
 import ru.skillbranch.skillarticles.R
 import ru.skillbranch.skillarticles.extensions.dpToIntPx
-import ru.skillbranch.skillarticles.viewmodels.ArticleState
-import ru.skillbranch.skillarticles.viewmodels.ArticleViewModel
-import ru.skillbranch.skillarticles.viewmodels.BaseViewModel
-import ru.skillbranch.skillarticles.viewmodels.ViewModelFactory
+import ru.skillbranch.skillarticles.viewmodels.*
 
 class RootActivity : AppCompatActivity() {
     //      constructor()
@@ -45,6 +42,37 @@ class RootActivity : AppCompatActivity() {
         viewModel.observeState(this) {
             renderUi(it)
         }
+
+        viewModel.observeNotifications(this){
+            renderNotification(it)
+        }
+
+    }
+
+    private fun renderNotification(notify:Notify){
+        val snackbar=Snackbar.make(coordinator_container,notify.message,Snackbar.LENGTH_LONG)
+            snackbar.setAnchorView(bottombar)
+            snackbar.setActionTextColor(getColor(R.color.color_accent_dark))
+
+        when (notify){
+            is  Notify.TextMessage -> {}
+            is Notify.ActionMessage -> {
+                snackbar.setAction(notify.actionLabel){notify.actionHandler?.invoke()}
+            }
+            is Notify.ErrorMessage -> {
+                with(snackbar){
+                    setBackgroundTint(getColor(R.color.design_default_color_error))
+                    setTextColor(getColor(android.R.color.white))
+                    setActionTextColor(getColor(android.R.color.white))
+                    setAction(notify.errLabel){
+                        notify.errHandler?.invoke()
+                    }
+                }
+            }
+        }
+
+        snackbar.show()
+
     }
 
     private fun setumSubMenu() {
@@ -66,7 +94,7 @@ class RootActivity : AppCompatActivity() {
         if (data.isShowMenu) submenu.open() else submenu.close()
 
         btn_like.isChecked=data.isLike
-        btn_bookmark.isChecked=data.isBookMark
+        btn_bookmark.isChecked=data.isBookmark
 
         switch_mode.isChecked=data.isDarkMode
 

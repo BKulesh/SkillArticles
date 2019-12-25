@@ -6,6 +6,8 @@ import ru.skillbranch.skillarticles.data.ArticleData
 import ru.skillbranch.skillarticles.data.ArticlePersonalInfo
 import ru.skillbranch.skillarticles.data.NetworkDataHolder.content
 import ru.skillbranch.skillarticles.data.repositories.ArticleRepository
+import ru.skillbranch.skillarticles.extensions.data.toAppSettings
+import ru.skillbranch.skillarticles.extensions.data.toArticlePersonalInfo
 import ru.skillbranch.skillarticles.extensions.format
 
 class ArticleViewModel(private val articleId: String): BaseViewModel<ArticleState>(ru.skillbranch.skillarticles.viewmodels.ArticleState()){
@@ -36,7 +38,7 @@ class ArticleViewModel(private val articleId: String): BaseViewModel<ArticleStat
         subscribeOnDataSource(getArticlePersonalInfo()) { info,state->
             info?:return@subscribeOnDataSource null
             state.copy(
-                isBookMark = info.isBookmark,
+                isBookmark = info.isBookmark,
                 isLike = info.isLike
             )
 
@@ -68,13 +70,41 @@ class ArticleViewModel(private val articleId: String): BaseViewModel<ArticleStat
         return repository.loadArticlePersonalInfo(articleId)
     }
 
-    fun handleUpText() {}
-    fun handleDownText() {}
-    fun handleNightMode() {}
+    fun handleUpText() {
+        repository.updateSettings(currentState.toAppSettings().copy(isBigText=true))
+    }
+    fun handleDownText() {
+        repository.updateSettings(currentState.toAppSettings().copy(isBigText=false))
+    }
+    fun handleNightMode() {
+        val settings=currentState.toAppSettings()
+        repository.updateSettings(settings.copy(isDarkMode = !settings.isDarkMode))
+    }
 
-    fun handleLike(){}
+    fun handleLike(){
+
+        val toggleLike:()->Unit={
+            val info=currentState.toArticlePersonalInfo()
+            repository.updateArticlePersonalInfo(info.copy(isLike = !info.isLike))
+        }
+        toggleLike()
+
+        val msg=if (currentState.isLike) Notify.TextMessage("Mark is liked")
+        else {
+            Notify.ActionMessage(
+                "Don't like it anymore",
+                "No, still like it",
+                toggleLike
+            )
+        }
+
+        notify(msg)
+    }
     fun handleBookmark() {}
-    fun handleShare() {}
+    fun handleShare() {
+        val msg="Share is not implemented"
+        notify(Notify.ErrorMessage(msg,"OK",null))
+    }
     fun handleToogleMenu() {
         updateState { it.copy(isShowMenu = !it.isShowMenu) }
     }
@@ -88,7 +118,7 @@ data class ArticleState(
     val isLoadingContent: Boolean=true,//контент загружается
     val isLoadingReviews:Boolean=true,//отзывы загружаются
     val isLike:Boolean=false,//отмечено как Like
-    val isBookMark: Boolean=false,//в закладках
+    val isBookmark: Boolean=false,//в закладках
     val isShowMenu: Boolean=false,//отображается меню
     val isBigText:Boolean=false,//Шрифт увеличен
     val isDarkMode:Boolean=false,//Темный режим
