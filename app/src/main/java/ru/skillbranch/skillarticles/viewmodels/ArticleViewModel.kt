@@ -2,6 +2,7 @@ package ru.skillbranch.skillarticles.viewmodels
 
 import androidx.lifecycle.LiveData
 import kotlinx.android.synthetic.main.layout_bottombar.*
+import ru.skillbranch.skillarticles.data.AppSettings
 import ru.skillbranch.skillarticles.data.ArticleData
 import ru.skillbranch.skillarticles.data.ArticlePersonalInfo
 import ru.skillbranch.skillarticles.data.NetworkDataHolder.content
@@ -69,6 +70,11 @@ class ArticleViewModel(private val articleId: String): BaseViewModel<ArticleStat
     private fun getArticlePersonalInfo():LiveData<ArticlePersonalInfo?>{
         return repository.loadArticlePersonalInfo(articleId)
     }
+
+    private fun getAppSettings():LiveData<AppSettings>{
+        return repository.getAppSettings()
+    }
+
 
     fun handleUpText() {
         repository.updateSettings(currentState.toAppSettings().copy(isBigText=true))
