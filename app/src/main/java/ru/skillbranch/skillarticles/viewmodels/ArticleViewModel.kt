@@ -20,6 +20,7 @@ class ArticleViewModel(private val articleId: String): BaseViewModel<ArticleStat
                 state.copy(
                     shareLink = article.shareLink,
                     title=article.title,
+                    author=article.author,
                     category = article.category,
                     categoryIcon = article.categoryIcon,
                     date=article.date.format()
@@ -111,7 +112,7 @@ class ArticleViewModel(private val articleId: String): BaseViewModel<ArticleStat
         val msg="Share is not implemented"
         notify(Notify.ErrorMessage(msg,"OK",null))
     }
-    fun handleToogleMenu() {
+    fun handleToggleMenu() {
         updateState { it.copy(isShowMenu = !it.isShowMenu) }
     }
 

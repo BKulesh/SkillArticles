@@ -6,7 +6,7 @@ import androidx.lifecycle.*
 import java.lang.IllegalArgumentException
 
 abstract class BaseViewModel<T>(initState:T): ViewModel(){
-    protected val notifications= MutableLiveData<Event<Notify>>()
+    public val notifications= MutableLiveData<Event<Notify>>()
 
     public val state: MediatorLiveData<T> = MediatorLiveData<T>().apply{
        value=initState
