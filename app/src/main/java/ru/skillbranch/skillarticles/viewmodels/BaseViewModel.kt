@@ -56,6 +56,10 @@ class ViewModelFactory(private val params: String): ViewModelProvider.Factory{
 
 class Event<out E>(private val content:E){
     var hasBeenHandled = false
+    //var message: String=content.
+
+
+    fun peekContent(): E =content
 
     fun getContentIfNotHandled():E?{
         return if (hasBeenHandled) null
@@ -64,7 +68,11 @@ class Event<out E>(private val content:E){
             content
         }
     }
+
 }
+
+
+
 
 class EventObserver<E>(private val onEventUnhandledContent:(E)->Unit):Observer<Event<E>>{
     override fun onChanged(event: Event<E>?) {
@@ -73,6 +81,8 @@ class EventObserver<E>(private val onEventUnhandledContent:(E)->Unit):Observer<E
         }
     }
 }
+
+
 
 sealed class Notify(val message: String){
     data class TextMessage(val msg:String):Notify(msg)

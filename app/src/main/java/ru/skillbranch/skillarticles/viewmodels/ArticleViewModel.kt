@@ -1,6 +1,7 @@
 package ru.skillbranch.skillarticles.viewmodels
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import kotlinx.android.synthetic.main.layout_bottombar.*
 import ru.skillbranch.skillarticles.data.AppSettings
 import ru.skillbranch.skillarticles.data.ArticleData
@@ -107,7 +108,28 @@ class ArticleViewModel(private val articleId: String): BaseViewModel<ArticleStat
 
         notify(msg)
     }
-    fun handleBookmark() {}
+    fun handleBookmark() {
+
+        val toggleBookmark:()->Unit={
+            val info=currentState.toArticlePersonalInfo()
+            repository.updateArticlePersonalInfo(info.copy(isBookmark = !info.isBookmark))
+        }
+        toggleBookmark()
+
+        val msg=if (currentState.isBookmark) Notify.TextMessage("Add to bookmarks")
+        else {
+            Notify.ActionMessage(
+                "Remove from bookmarks",
+                "Not yet your bookmark",
+                toggleBookmark
+            )
+        }
+
+        notify(msg)
+
+    }
+
+
     fun handleShare() {
         val msg="Share is not implemented"
         notify(Notify.ErrorMessage(msg,"OK",null))
@@ -118,6 +140,8 @@ class ArticleViewModel(private val articleId: String): BaseViewModel<ArticleStat
 
 
 }
+
+
 
 
 data class ArticleState(
