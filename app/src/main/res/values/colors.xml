@@ -12,4 +12,6 @@
     <color name="color_article_bar">#FFFFFF</color>
     <color name="color_on_article_bar">#1C0E42</color>
     <color name="color_divider">#1F000000</color>
+    <color name="color_green_light">#CFFBE6</color>
+    <color name="color_green">#4dba87</color>
 </resources>

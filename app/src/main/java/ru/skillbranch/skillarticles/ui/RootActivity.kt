@@ -2,8 +2,13 @@ package ru.skillbranch.skillarticles.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.ContextMenu
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.SearchView
 //import android.widget.Toolbar
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProviders
@@ -19,6 +24,8 @@ class RootActivity : AppCompatActivity() {
     //      constructor()
 
     private lateinit var viewModel: ArticleViewModel
+    var isSearching: Boolean=false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +54,47 @@ class RootActivity : AppCompatActivity() {
             renderNotification(it)
         }
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_search,menu)
+        val menuItem=menu?.findItem(R.id.action_search)
+        val searchView=(menuItem?.actionView as? SearchView)
+        //searchView?.queryHint=getString("oops")//R.string.article_search_placeholder)
+        searchView?.queryHint="oops"//R.string.article_search_placeholder)
+
+        if (isSearching){
+            menuItem?.expandActionView()
+            searchView?.setQuery("oops1",false)
+            searchView?.clearFocus()
+        }
+
+        //return super.onCreateOptionsMenu(menu)
+
+        menuItem?.setOnActionExpandListener(object: MenuItem.OnActionExpandListener{
+            override fun onMenuItemActionCollapse(p0: MenuItem?): Boolean {
+                //viewModel.handleSearch
+                return true
+            }
+
+            override fun onMenuItemActionExpand(p0: MenuItem?): Boolean {
+                return true
+            }
+        })
+        searchView?.setOnQueryTextListener(object :SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                searchView.clearFocus()
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return true
+            }
+
+        })
+
+
+        return super.onCreateOptionsMenu(menu)
     }
 
     private fun renderNotification(notify:Notify){
@@ -86,7 +134,7 @@ class RootActivity : AppCompatActivity() {
         btn_like.setOnClickListener{ viewModel.handleLike()}
         btn_bookmark.setOnClickListener{viewModel.handleBookmark()}
         btn_share.setOnClickListener{viewModel.handleShare()}
-        btn_settings.setOnClickListener{viewModel.handleToogleMenu()}
+        btn_settings.setOnClickListener{viewModel.handleToggleMenu()}
     }
 
     private fun renderUi(data:ArticleState){
