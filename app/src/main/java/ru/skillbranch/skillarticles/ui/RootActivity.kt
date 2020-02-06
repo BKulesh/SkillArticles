@@ -24,7 +24,8 @@ class RootActivity : AppCompatActivity() {
     //      constructor()
 
     private lateinit var viewModel: ArticleViewModel
-    var isSearching: Boolean=false
+    private var isSearching: Boolean=false
+    private var searchQuery: String?= null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,6 +49,10 @@ class RootActivity : AppCompatActivity() {
         viewModel=ViewModelProviders.of(this,vmFactory).get(ArticleViewModel::class.java)
         viewModel.observeState(this) {
             renderUi(it)
+            if (it.isSearch) {
+                isSearching=true
+                searchQuery=it.searchQuery
+            }
         }
 
         viewModel.observeNotifications(this){
@@ -73,21 +78,25 @@ class RootActivity : AppCompatActivity() {
 
         menuItem?.setOnActionExpandListener(object: MenuItem.OnActionExpandListener{
             override fun onMenuItemActionCollapse(p0: MenuItem?): Boolean {
-                //viewModel.handleSearch
+                viewModel.handleSearchMode(true)
                 return true
             }
 
             override fun onMenuItemActionExpand(p0: MenuItem?): Boolean {
+                viewModel.handleSearchMode(false)
                 return true
             }
         })
         searchView?.setOnQueryTextListener(object :SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
+                viewModel.handleSearch(query)
                 searchView.clearFocus()
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
+                viewModel.handleSearch(newText)
+                searchView.clearFocus()
                 return true
             }
 

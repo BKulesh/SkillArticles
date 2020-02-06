@@ -139,6 +139,15 @@ class ArticleViewModel(private val articleId: String): BaseViewModel<ArticleStat
     }
 
 
+    fun handleSearchMode(isSearch: Boolean){
+
+    }
+
+    fun handleSearch(query: String?){
+
+    }
+
+
 }
 
 

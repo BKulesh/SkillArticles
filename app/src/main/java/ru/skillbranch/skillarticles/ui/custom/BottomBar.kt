@@ -7,7 +7,7 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.shape.MaterialShapeDrawable
 
-class BottomBar @JvmOverloads constructor(
+class Bottombar @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet?=null,
     defStyleAttr:Int=0
