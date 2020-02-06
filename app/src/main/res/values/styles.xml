@@ -20,6 +20,8 @@
         <item name="colorOnSurface">@color/color_on_surface</item>
 
         <item name="snackbarStyle">@style/CustomSnackbar</item>
+        <item name="android:textColorHint">@color/color_gray</item>
+        <item name="android:textColorPrimary">?attr/colorOnPrimary</item>
     </style>
 
     <style name="BottombarIcon">
@@ -29,6 +31,11 @@
         <item name="android:tint">@color/tint_color</item>
         <item name="android:background">@drawable/ripple</item>
     </style>
+
+    <style name="BottombarSearchIcon">
+        <item name="android:tint">@color/tint_search_color</item>
+    </style>
+
 
     <style name="ArticleBarsTheme" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
         <item name="colorPrimary">@color/color_article_bar</item>
