@@ -34,7 +34,7 @@ class Bottombar @JvmOverloads constructor(
         materialBg.elevation=elevation
         background=materialBg
     }
-/*
+
     override fun onSaveInstanceState(): Parcelable? {
         val savedState=SavedState(super.onSaveInstanceState())
         savedState.ssIsSearchMode=isSearchMode
@@ -64,17 +64,17 @@ class Bottombar @JvmOverloads constructor(
         val va=ViewAnimationUtils.createCircularReveal(reveal,width,height/2,0f,endRadius)
         va.doOnEnd { reveal.isVisible=false }
         va.start()
-    }*/
+    }
 
-   /* private fun animateShowSearchPanel() {
+    private fun animateShowSearchPanel() {
         reveal.isVisible=true
         val endRadius=hypot(width.toFloat(),height/2f)
         val va=ViewAnimationUtils.createCircularReveal(group_bottom,width,height/2,0f,endRadius)
         va.doOnEnd { group_bottom.isVisible=false }
         va.start()
-    }*/
+    }
 
-   /* fun bindSearchInfo(searchCount: Int =0, position: Int=0)
+    fun bindSearchInfo(searchCount: Int =0, position: Int=0)
     {
         if (searchCount==0) {
             tv_search_result.text="Not fount"
@@ -112,6 +112,6 @@ class Bottombar @JvmOverloads constructor(
             override fun createFromParcel(parcel: Parcel) = SavedState(parcel)
             override fun newArray(size: Int):Array<SavedState?> = arrayOfNulls(size)
         }
-    }*/
+    }
 
 }

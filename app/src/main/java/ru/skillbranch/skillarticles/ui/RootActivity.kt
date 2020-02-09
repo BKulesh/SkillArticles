@@ -65,12 +65,11 @@ class RootActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.menu_search,menu)
         val menuItem=menu?.findItem(R.id.action_search)
         val searchView=(menuItem?.actionView as? SearchView)
-        //searchView?.queryHint=getString("oops")//R.string.article_search_placeholder)
-        searchView?.queryHint="oops"//R.string.article_search_placeholder)
+        searchView?.queryHint=getString(R.string.article_search_placeholder)
 
         if (isSearching){
             menuItem?.expandActionView()
-            searchView?.setQuery("oops1",false)
+            searchView?.setQuery(searchQuery,false)
             searchView?.clearFocus()
         }
 
@@ -147,7 +146,7 @@ class RootActivity : AppCompatActivity() {
     }
 
     private fun renderUi(data:ArticleState){
-        //bottombar.setSearchState(data.isSearch)
+        bottombar.setSearchState(data.isSearch)
 
         btn_settings.isChecked=data.isShowMenu
         if (data.isShowMenu) submenu.open() else submenu.close()

@@ -5,14 +5,18 @@ import android.graphics.Path
 import android.os.Parcel
 import android.os.Parcelable
 import android.util.AttributeSet
+import android.view.SubMenu
 import android.view.View
 import android.view.ViewAnimationUtils
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
 import com.google.android.material.shape.MaterialShapeDrawable
 import ru.skillbranch.skillarticles.R
 import ru.skillbranch.skillarticles.extensions.dpToPx
+import ru.skillbranch.skillarticles.ui.custom.behaviors.BottombarBehavior
+import ru.skillbranch.skillarticles.ui.custom.behaviors.SubmenuBehavior
 import java.time.format.DecimalStyle
 import kotlin.math.hypot
 
@@ -20,8 +24,12 @@ class ArticleSubmenu @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet,
     defStyleAttr: Int=0
-    ) :ConstraintLayout(context, attrs,defStyleAttr){
+    ) :ConstraintLayout(context, attrs,defStyleAttr), CoordinatorLayout.AttachedBehavior{
     var isOpen=false
+
+    override fun getBehavior(): CoordinatorLayout.Behavior<ArticleSubmenu> {
+        return SubmenuBehavior()
+    }
     private var centerX: Float = context.dpToPx(200)
     private var centerY: Float = context.dpToPx(96)
     init {
