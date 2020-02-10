@@ -33,6 +33,7 @@ abstract class BaseViewModel<T>(initState:T): ViewModel(){
 
     fun observeNotifications(owner:LifecycleOwner,onNotify:(notification: Notify)->Unit){
         notifications.observe(owner,EventObserver{onNotify(it)})
+
     }
 
     protected fun <S> subscribeOnDataSource(
