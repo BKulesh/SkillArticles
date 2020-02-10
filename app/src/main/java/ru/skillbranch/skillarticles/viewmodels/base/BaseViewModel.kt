@@ -1,8 +1,8 @@
-package ru.skillbranch.skillarticles.viewmodels
+package ru.skillbranch.skillarticles.viewmodels.base
 
-import android.app.usage.UsageEvents
 import androidx.annotation.UiThread
 import androidx.lifecycle.*
+import ru.skillbranch.skillarticles.viewmodels.ArticleViewModel
 import java.lang.IllegalArgumentException
 
 abstract class BaseViewModel<T>(initState:T): ViewModel(){
@@ -24,7 +24,8 @@ abstract class BaseViewModel<T>(initState:T): ViewModel(){
 
     @UiThread
     protected fun notify(content: Notify){
-        notifications.value= Event(content)
+        notifications.value=
+            Event(content)
     }
 
     fun observeState(owner: LifecycleOwner,onChanged: (newState: T)->Unit ){
@@ -32,7 +33,10 @@ abstract class BaseViewModel<T>(initState:T): ViewModel(){
     }
 
     fun observeNotifications(owner:LifecycleOwner,onNotify:(notification: Notify)->Unit){
-        notifications.observe(owner,EventObserver{onNotify(it)})
+        notifications.observe(owner,
+            EventObserver {
+                onNotify(it)
+            })
 
     }
 
@@ -49,7 +53,9 @@ abstract class BaseViewModel<T>(initState:T): ViewModel(){
 class ViewModelFactory(private val params: String): ViewModelProvider.Factory{
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ArticleViewModel::class.java)) {
-            return ArticleViewModel(params) as T
+            return ArticleViewModel(
+                params
+            ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
@@ -86,14 +92,15 @@ class EventObserver<E>(private val onEventUnhandledContent:(E)->Unit):Observer<E
 
 
 sealed class Notify(val message: String){
-    data class TextMessage(val msg:String):Notify(msg)
+    data class TextMessage(val msg:String):
+        Notify(msg)
     data class ActionMessage(
         val msg: String,
         val actionLabel: String,
         val actionHandler: (()->Unit)?
-    ):Notify(msg)
+    ): Notify(msg)
     data class ErrorMessage(
         val msg: String,
         val errLabel: String,
         val errHandler: (()->Unit)?
-    ):Notify(msg)}
+    ): Notify(msg)}

@@ -2,10 +2,9 @@ package ru.skillbranch.skillarticles.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.ContextMenu
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
@@ -16,9 +15,12 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_root.*
 import kotlinx.android.synthetic.main.layout_bottombar.*
 import kotlinx.android.synthetic.main.layout_submenu.*
+import kotlinx.android.synthetic.main.search_view_layout.*
 import ru.skillbranch.skillarticles.R
 import ru.skillbranch.skillarticles.extensions.dpToIntPx
 import ru.skillbranch.skillarticles.viewmodels.*
+import ru.skillbranch.skillarticles.viewmodels.base.Notify
+import ru.skillbranch.skillarticles.viewmodels.base.ViewModelFactory
 
 class RootActivity : AppCompatActivity() {
     //      constructor()
@@ -33,7 +35,7 @@ class RootActivity : AppCompatActivity() {
         setContentView(R.layout.activity_root)
         setupToolbar()
         setupBottomBar()
-        setumSubMenu()
+        setupSubMenu()
 
         //btn_like.setOnClickListener {
         //    Snackbar.make(coordinator_container, "test", Snackbar.LENGTH_LONG)
@@ -45,14 +47,15 @@ class RootActivity : AppCompatActivity() {
         //    delegate.localNightMode=if (switch_mode.isChecked) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
         //}
 
-        val vmFactory= ViewModelFactory("0")
+        val vmFactory=
+            ViewModelFactory("0")
         viewModel=ViewModelProviders.of(this,vmFactory).get(ArticleViewModel::class.java)
         viewModel.observeState(this) {
             renderUi(it)
-            if (it.isSearch) {
-                isSearching=true
-                searchQuery=it.searchQuery
-            }
+            //if (it.isSearch) {
+            //    isSearching=true
+            //    searchQuery=it.searchQuery
+            //}
         }
 
         viewModel.observeNotifications(this){
@@ -65,38 +68,40 @@ class RootActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.menu_search,menu)
         val menuItem=menu?.findItem(R.id.action_search)
         val searchView=(menuItem?.actionView as? SearchView)
-        //searchView?.queryHint=getString("oops")//R.string.article_search_placeholder)
-        searchView?.queryHint="oops"//R.string.article_search_placeholder)
+        searchView?.queryHint=getString(R.string.article_search_placeholder)
+
 
         if (isSearching){
             menuItem?.expandActionView()
-            searchView?.setQuery("oops1",false)
-            searchView?.clearFocus()
+            searchView?.setQuery(searchQuery,false)
+            //searchView?.clearFocus()
         }
 
         //return super.onCreateOptionsMenu(menu)
 
         menuItem?.setOnActionExpandListener(object: MenuItem.OnActionExpandListener{
             override fun onMenuItemActionCollapse(p0: MenuItem?): Boolean {
-                viewModel.handleSearchMode(true)
+                Log.d("menuitem","collapse")
+                viewModel.handleSearchMode(false)
                 return true
             }
 
             override fun onMenuItemActionExpand(p0: MenuItem?): Boolean {
-                viewModel.handleSearchMode(false)
+                Log.d("menuitem","expande")
+                viewModel.handleSearchMode(true)
                 return true
             }
         })
         searchView?.setOnQueryTextListener(object :SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
                 viewModel.handleSearch(query)
-                searchView.clearFocus()
+                //searchView.clearFocus()
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 viewModel.handleSearch(newText)
-                searchView.clearFocus()
+                //searchView.clearFocus()
                 return true
             }
 
@@ -106,7 +111,7 @@ class RootActivity : AppCompatActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
-    private fun renderNotification(notify:Notify){
+    private fun renderNotification(notify: Notify){
         val snackbar=Snackbar.make(coordinator_container,notify.message,Snackbar.LENGTH_LONG)
             snackbar.setAnchorView(bottombar)
             snackbar.setActionTextColor(getColor(R.color.color_accent_dark))
@@ -132,7 +137,7 @@ class RootActivity : AppCompatActivity() {
 
     }
 
-    private fun setumSubMenu() {
+    private fun setupSubMenu() {
         btn_text_up.setOnClickListener{ viewModel.handleUpText() }
         btn_text_down.setOnClickListener{ viewModel.handleDownText() }
         switch_mode.setOnClickListener{ viewModel.handleNightMode() }
@@ -144,10 +149,25 @@ class RootActivity : AppCompatActivity() {
         btn_bookmark.setOnClickListener{viewModel.handleBookmark()}
         btn_share.setOnClickListener{viewModel.handleShare()}
         btn_settings.setOnClickListener{viewModel.handleToggleMenu()}
+
+        btn_result_up.setOnClickListener{
+            if (search_view.hasFocus()) search_view.clearFocus()
+            viewModel.handleUpResult()
+        }
+
+        btn_result_down.setOnClickListener{
+            if (search_view.hasFocus()) search_view.clearFocus()
+            viewModel.handleDownResult()
+        }
+
+        btn_search_close.setOnClickListener{
+            viewModel.handleSearchMode(false)
+            invalidateOptionsMenu()
+        }
     }
 
     private fun renderUi(data:ArticleState){
-        //bottombar.setSearchState(data.isSearch)
+        bottombar.setSearchState(data.isSearch)
 
         btn_settings.isChecked=data.isShowMenu
         if (data.isShowMenu) submenu.open() else submenu.close()
@@ -194,3 +214,4 @@ class RootActivity : AppCompatActivity() {
         //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
+

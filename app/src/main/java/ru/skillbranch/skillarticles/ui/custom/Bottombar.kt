@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
 import android.util.AttributeSet
+import android.util.Log
 import ru.skillbranch.skillarticles.R
 import android.view.View
 import android.view.ViewAnimationUtils
@@ -34,7 +35,7 @@ class Bottombar @JvmOverloads constructor(
         materialBg.elevation=elevation
         background=materialBg
     }
-/*
+
     override fun onSaveInstanceState(): Parcelable? {
         val savedState=SavedState(super.onSaveInstanceState())
         savedState.ssIsSearchMode=isSearchMode
@@ -46,16 +47,20 @@ class Bottombar @JvmOverloads constructor(
         super.onRestoreInstanceState(state)
         if (state is SavedState) {
             isSearchMode=state.ssIsSearchMode
-            reveal.isVisible=isSearchMode
+            reveal.isVisible=!isSearchMode
             group_bottom.isVisible=!isSearchMode
         }
     }
 
     fun setSearchState(search: Boolean){
+        Log.d("setSearchState","search="+search.toString()+"isSearchMode"+isSearchMode.toString())
         if (isSearchMode==search||!isAttachedToWindow) return
         isSearchMode=search
         if (isSearchMode) animateShowSearchPanel()
         else animateHideSearchPanel()
+
+        //if (!isAttachedToWindow) return
+        //animateShowSearchPanel()
     }
 
     private fun animateHideSearchPanel() {
@@ -64,17 +69,17 @@ class Bottombar @JvmOverloads constructor(
         val va=ViewAnimationUtils.createCircularReveal(reveal,width,height/2,0f,endRadius)
         va.doOnEnd { reveal.isVisible=false }
         va.start()
-    }*/
+    }
 
-   /* private fun animateShowSearchPanel() {
+    private fun animateShowSearchPanel() {
         reveal.isVisible=true
         val endRadius=hypot(width.toFloat(),height/2f)
         val va=ViewAnimationUtils.createCircularReveal(group_bottom,width,height/2,0f,endRadius)
         va.doOnEnd { group_bottom.isVisible=false }
         va.start()
-    }*/
+    }
 
-   /* fun bindSearchInfo(searchCount: Int =0, position: Int=0)
+    fun bindSearchInfo(searchCount: Int =0, position: Int=0)
     {
         if (searchCount==0) {
             tv_search_result.text="Not fount"
@@ -112,6 +117,6 @@ class Bottombar @JvmOverloads constructor(
             override fun createFromParcel(parcel: Parcel) = SavedState(parcel)
             override fun newArray(size: Int):Array<SavedState?> = arrayOfNulls(size)
         }
-    }*/
+    }
 
 }

@@ -1,16 +1,15 @@
 package ru.skillbranch.skillarticles.viewmodels
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import kotlinx.android.synthetic.main.layout_bottombar.*
 import ru.skillbranch.skillarticles.data.AppSettings
 import ru.skillbranch.skillarticles.data.ArticleData
 import ru.skillbranch.skillarticles.data.ArticlePersonalInfo
-import ru.skillbranch.skillarticles.data.NetworkDataHolder.content
 import ru.skillbranch.skillarticles.data.repositories.ArticleRepository
 import ru.skillbranch.skillarticles.extensions.data.toAppSettings
 import ru.skillbranch.skillarticles.extensions.data.toArticlePersonalInfo
 import ru.skillbranch.skillarticles.extensions.format
+import ru.skillbranch.skillarticles.viewmodels.base.BaseViewModel
+import ru.skillbranch.skillarticles.viewmodels.base.Notify
 
 class ArticleViewModel(private val articleId: String): BaseViewModel<ArticleState>(ru.skillbranch.skillarticles.viewmodels.ArticleState()){
     private val repository =ArticleRepository
@@ -140,11 +139,20 @@ class ArticleViewModel(private val articleId: String): BaseViewModel<ArticleStat
 
 
     fun handleSearchMode(isSearch: Boolean){
-
+        updateState { it.copy(isSearch=isSearch) }
     }
 
     fun handleSearch(query: String?){
+        updateState { it.copy(searchQuery= query) }
 
+    }
+
+    fun handleUpResult() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    fun handleDownResult() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
 
