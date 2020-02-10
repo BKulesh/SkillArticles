@@ -2,6 +2,7 @@ package ru.skillbranch.skillarticles.ui.custom.behaviors
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.marginRight
@@ -16,6 +17,7 @@ class SubmenuBehavior():CoordinatorLayout.Behavior<ArticleSubmenu>() {
         child: ArticleSubmenu,
         dependency: View
     ): Boolean {
+        Log.d("SubmenuBehavior","layoutDependsOn")
         return dependency is  Bottombar
     }
 
@@ -24,6 +26,7 @@ class SubmenuBehavior():CoordinatorLayout.Behavior<ArticleSubmenu>() {
         child: ArticleSubmenu,
         dependency: View
     ): Boolean {
+        Log.d("SubmenuBehavior","onDependentViewChanged")
         return if (child.isOpen && dependency.translationY>=0f) {
             animate(child,dependency)
             true
