@@ -147,7 +147,7 @@ class RootActivity : AppCompatActivity() {
     }
 
     private fun renderUi(data:ArticleState){
-        //bottombar.setSearchState(data.isSearch)
+        bottombar.setSearchState(data.isSearch)
 
         btn_settings.isChecked=data.isShowMenu
         if (data.isShowMenu) submenu.open() else submenu.close()
