@@ -5,7 +5,7 @@ import androidx.lifecycle.*
 import ru.skillbranch.skillarticles.viewmodels.ArticleViewModel
 import java.lang.IllegalArgumentException
 
-abstract class BaseViewModel<T>(initState:T): ViewModel(){
+abstract class BaseViewModel<T:IViewModelState>(initState:T): ViewModel(){
     public val notifications= MutableLiveData<Event<Notify>>()
 
     public val state: MediatorLiveData<T> = MediatorLiveData<T>().apply{
@@ -50,7 +50,7 @@ abstract class BaseViewModel<T>(initState:T): ViewModel(){
     }
 }
 
-class ViewModelFactory(private val params: String): ViewModelProvider.Factory{
+/*class ViewModelFactory(private val params: String): ViewModelProvider.Factory{
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ArticleViewModel::class.java)) {
             return ArticleViewModel(
@@ -59,7 +59,7 @@ class ViewModelFactory(private val params: String): ViewModelProvider.Factory{
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
-}
+}*/
 
 class Event<out E>(private val content:E){
     var hasBeenHandled = false
