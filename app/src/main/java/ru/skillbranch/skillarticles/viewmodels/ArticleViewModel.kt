@@ -1,5 +1,6 @@
 package ru.skillbranch.skillarticles.viewmodels
 
+import android.os.Bundle
 import androidx.lifecycle.LiveData
 import ru.skillbranch.skillarticles.data.AppSettings
 import ru.skillbranch.skillarticles.data.ArticleData
@@ -9,6 +10,7 @@ import ru.skillbranch.skillarticles.extensions.data.toAppSettings
 import ru.skillbranch.skillarticles.extensions.data.toArticlePersonalInfo
 import ru.skillbranch.skillarticles.extensions.format
 import ru.skillbranch.skillarticles.viewmodels.base.BaseViewModel
+import ru.skillbranch.skillarticles.viewmodels.base.IViewModelState
 import ru.skillbranch.skillarticles.viewmodels.base.Notify
 
 class ArticleViewModel(private val articleId: String): BaseViewModel<ArticleState>(ru.skillbranch.skillarticles.viewmodels.ArticleState()){
@@ -183,4 +185,12 @@ data class ArticleState(
     val author: Any?=null,//автор статьи
     val content: List<Any> = emptyList(), // содержание
     val reviews: List<Any> = emptyList() // комментарии
-)
+): IViewModelState{
+    override fun save(outState: Bundle) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun restore(savedState: Bundle): IViewModelState {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+}

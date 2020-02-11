@@ -18,24 +18,25 @@ import kotlinx.android.synthetic.main.layout_submenu.*
 import kotlinx.android.synthetic.main.search_view_layout.*
 import ru.skillbranch.skillarticles.R
 import ru.skillbranch.skillarticles.extensions.dpToIntPx
+import ru.skillbranch.skillarticles.ui.base.BaseActivity
+import ru.skillbranch.skillarticles.ui.custom.IArticleView
 import ru.skillbranch.skillarticles.viewmodels.*
 import ru.skillbranch.skillarticles.viewmodels.base.Notify
 import ru.skillbranch.skillarticles.viewmodels.base.ViewModelFactory
 
-class RootActivity : AppCompatActivity() {
+class RootActivity : BaseActivity<ArticleViewModel>(),IArticleView {
     //      constructor()
+    override val layout: Int = R.layout.activity_root
+    override lateinit var viewModel: ArticleViewModel
 
-    private lateinit var viewModel: ArticleViewModel
     private var isSearching: Boolean=false
     private var searchQuery: String?= null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_root)
-        setupToolbar()
-        setupBottomBar()
-        setupSubMenu()
+        //setContentView(R.layout.activity_root)
+
 
         //btn_like.setOnClickListener {
         //    Snackbar.make(coordinator_container, "test", Snackbar.LENGTH_LONG)
@@ -63,6 +64,37 @@ class RootActivity : AppCompatActivity() {
         }
 
     }
+
+
+
+
+
+    override fun setupViews() {
+        setupToolbar()
+        setupBottomBar()
+        setupSubMenu()
+    }
+
+    override fun renderSearchResult(searchResult: List<Pair<Int, Int>>) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun renderSearchPosition(searchPosition: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun clearSearchResult() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun showSearchBar() {
+        bottombar.setSearchState(true)
+    }
+
+    override fun hideSearchBar() {
+        bottombar.setSearchState(false)
+    }
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_search,menu)
@@ -213,5 +245,7 @@ class RootActivity : AppCompatActivity() {
         }
         //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
+
+
 }
 
