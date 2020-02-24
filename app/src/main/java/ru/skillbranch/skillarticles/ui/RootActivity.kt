@@ -25,9 +25,13 @@ import kotlinx.android.synthetic.main.search_view_layout.*
 import ru.skillbranch.skillarticles.R
 import ru.skillbranch.skillarticles.extensions.dpToIntPx
 import ru.skillbranch.skillarticles.ui.base.BaseActivity
+import ru.skillbranch.skillarticles.ui.base.Binding
 import ru.skillbranch.skillarticles.ui.custom.SearchFocusSpan
 import ru.skillbranch.skillarticles.ui.custom.SearchSpan
+import ru.skillbranch.skillarticles.ui.delegates.AttrValue
+import ru.skillbranch.skillarticles.ui.delegates.RenderProp
 import ru.skillbranch.skillarticles.viewmodels.*
+import ru.skillbranch.skillarticles.viewmodels.base.IViewModelState
 import ru.skillbranch.skillarticles.viewmodels.base.Notify
 import ru.skillbranch.skillarticles.viewmodels.base.ViewModelFactory
 
@@ -36,12 +40,13 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
     //      constructor()
     override val layout: Int = R.layout.activity_root
     override lateinit var viewModel: ArticleViewModel
+    override val binding: Binding by lazy { ArticleBinding() }
 
     private var isSearching: Boolean=false
     private var searchQuery: String?= null
 
-    private val bgColor= Color.RED
-    private val fgColor=Color.WHITE
+    private val bgColor by AttrValue(R.attr.colorSecondary)
+    private val fgColor by AttrValue(R.attr.colorOnSecondary)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -180,7 +185,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
         return super.onCreateOptionsMenu(menu)
     }
 
-    private fun renderNotification(notify: Notify){
+    override fun renderNotification(notify: Notify){
         val snackbar=Snackbar.make(coordinator_container,notify.message,Snackbar.LENGTH_LONG)
             snackbar.setAnchorView(bottombar)
             snackbar.setActionTextColor(getColor(R.color.color_accent_dark))
@@ -293,9 +298,29 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
             it.marginEnd=this.dpToIntPx(16)
             logo.layoutParams=it
         }
-        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
+    inner class  ArticleBinding(): Binding(){
+        private var isLike:Boolean by RenderProp(false){btn_like.isChecked=it}
+        private var isBookMark:Boolean by RenderProp(false){btn_bookmark.isChecked=it}
+        private var isShowMenu:Boolean by RenderProp(false){
+            btn_settings.isChecked=it
+            if (it) submenu.open() else submenu.close()
+        }
+
+        override fun onFininishInfale() {
+
+        }
+
+        override fun bind(data: IViewModelState) {
+            data as ArticleState
+            isLike=data.isLike
+            isBookMark=data.isBookmark
+            isShowMenu=data.isShowMenu
+        }
+
+    }
 
 }
 

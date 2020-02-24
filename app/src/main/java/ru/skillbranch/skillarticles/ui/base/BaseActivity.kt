@@ -5,17 +5,23 @@ import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
 import ru.skillbranch.skillarticles.viewmodels.base.BaseViewModel
 import ru.skillbranch.skillarticles.viewmodels.base.IViewModelState
+import ru.skillbranch.skillarticles.viewmodels.base.Notify
 
 abstract class BaseActivity<T:BaseViewModel<out IViewModelState>> : AppCompatActivity() {
+    protected abstract val binding: Binding;
     protected abstract var viewModel:T
     protected abstract val layout: Int
 
     abstract fun setupViews()
+    abstract fun renderNotification(notify: Notify)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(layout)
         setupViews()
+        binding.onFininishInfale()
+        viewModel.observeState(this){binding.bind(it)}
+        viewModel.observeNotifications(this){renderNotification(it)}
     }
 
 }
