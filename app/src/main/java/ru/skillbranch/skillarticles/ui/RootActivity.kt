@@ -83,11 +83,11 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
         Log.e("Debug","renderSearchResult before")
         val content=tv_text_content.text as Spannable
         Log.e("Debug","renderSearchResult after")
-        //val bgColor= Color.RED
-        //val fgColor=Color.WHITE
-        //searchResult.forEach{(start,end)->
-        //    content.setSpan(SearchSpan(bgColor,fgColor),start,end,SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-        //}
+        val bgColor= Color.RED
+        val fgColor=Color.WHITE
+        searchResult.forEach{(start,end)->
+            content.setSpan(SearchSpan(bgColor,fgColor),start,end,SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
     }
 
     override fun renderSearchPosition(searchPosition: Int) {
@@ -240,7 +240,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
             btn_text_down.isChecked = true
         }
 
-        tv_text_content.text= if (data.isLoadingContent) "loading" else data.content.first() as String
+        //tv_text_content.text= if (data.isLoadingContent) "loading" else data.content.first() as String
 
         if (data.isLoadingContent) {
             tv_text_content.text="loading"
