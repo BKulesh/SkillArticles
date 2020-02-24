@@ -9,7 +9,7 @@ class RenderProp<T>(
     needInit: Boolean=true,
     private val onChange:((T)->Unit)?=null
 ):ReadWriteProperty<Binding,T>{
-
+    private val listeners:MutableList<()->Unit> = mutableListOf()
     init{
         if(needInit) onChange?.invoke(value)
     }
@@ -19,6 +19,27 @@ class RenderProp<T>(
         if (value==this.value) return
         this.value=value
         onChange?.invoke(this.value)
+        if (listeners.isNotEmpty()) listeners.forEach{it.invoke()}
+    }
+
+    fun addListener(listener: ()->Unit){
+        listeners.add(listener)
+    }
+
+}
+
+class ObserveProp<T:Any>(private var value:T, private val onChange: ((T) -> Unit)?=null){
+    operator fun provideDelegate(
+        thisRef: Binding,
+        property: KProperty<*>
+    ):ReadWriteProperty<Binding,T>{
+        val delegate=RenderProp(value,true,onChange)
+        registerDelegate(thisRef,property.name,delegate)
+        return delegate
+    }
+
+    private fun registerDelegate(thisRef: Binding,name:String,delegate:RenderProp<T>){
+        thisRef.delegates[name]=delegate
     }
 
 }
