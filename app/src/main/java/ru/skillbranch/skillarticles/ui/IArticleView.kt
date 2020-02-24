@@ -1,4 +1,4 @@
-package ru.skillbranch.skillarticles.ui.custom
+package ru.skillbranch.skillarticles.ui
 
 interface IArticleView {
     /**
