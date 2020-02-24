@@ -1,11 +1,14 @@
 package ru.skillbranch.skillarticles.ui
 
-import androidx.appcompat.app.AppCompatActivity
+import android.graphics.Color
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
 //import android.widget.Toolbar
@@ -19,12 +22,13 @@ import kotlinx.android.synthetic.main.search_view_layout.*
 import ru.skillbranch.skillarticles.R
 import ru.skillbranch.skillarticles.extensions.dpToIntPx
 import ru.skillbranch.skillarticles.ui.base.BaseActivity
-import ru.skillbranch.skillarticles.ui.custom.IArticleView
+import ru.skillbranch.skillarticles.ui.custom.SearchSpan
 import ru.skillbranch.skillarticles.viewmodels.*
 import ru.skillbranch.skillarticles.viewmodels.base.Notify
 import ru.skillbranch.skillarticles.viewmodels.base.ViewModelFactory
 
-class RootActivity : BaseActivity<ArticleViewModel>(),IArticleView {
+class RootActivity : BaseActivity<ArticleViewModel>(),
+    IArticleView {
     //      constructor()
     override val layout: Int = R.layout.activity_root
     override lateinit var viewModel: ArticleViewModel
@@ -76,7 +80,14 @@ class RootActivity : BaseActivity<ArticleViewModel>(),IArticleView {
     }
 
     override fun renderSearchResult(searchResult: List<Pair<Int, Int>>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        Log.e("Debug","renderSearchResult before")
+        val content=tv_text_content.text as Spannable
+        Log.e("Debug","renderSearchResult after")
+        //val bgColor= Color.RED
+        //val fgColor=Color.WHITE
+        //searchResult.forEach{(start,end)->
+        //    content.setSpan(SearchSpan(bgColor,fgColor),start,end,SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+        //}
     }
 
     override fun renderSearchPosition(searchPosition: Int) {
@@ -89,10 +100,12 @@ class RootActivity : BaseActivity<ArticleViewModel>(),IArticleView {
 
     override fun showSearchBar() {
         bottombar.setSearchState(true)
+        //scroll.setMarginOptionally(dpToIntPx(56))
     }
 
     override fun hideSearchBar() {
         bottombar.setSearchState(false)
+        //scroll.setMarginOptionally(dpToIntPx(0))
     }
 
 
@@ -199,7 +212,12 @@ class RootActivity : BaseActivity<ArticleViewModel>(),IArticleView {
     }
 
     private fun renderUi(data:ArticleState){
-        bottombar.setSearchState(data.isSearch)
+        Log.e("RootActivity","renderUi:$data")
+        //bottombar.setSearchState(data.isSearch)
+        if (data.isSearch) showSearchBar() else hideSearchBar()
+
+        if (data.searchResults.isNotEmpty()) renderSearchResult(data.searchResults)
+
 
         btn_settings.isChecked=data.isShowMenu
         if (data.isShowMenu) submenu.open() else submenu.close()
@@ -224,6 +242,12 @@ class RootActivity : BaseActivity<ArticleViewModel>(),IArticleView {
 
         tv_text_content.text= if (data.isLoadingContent) "loading" else data.content.first() as String
 
+        if (data.isLoadingContent) {
+            tv_text_content.text="loading"
+        } else if (tv_text_content.text=="loading") {
+            val content=data.content.first() as String;
+            tv_text_content.setText(content,TextView.BufferType.SPANNABLE)
+        }
         toolbar.title= data.title?: "loading"
         toolbar.subtitle=data.category?:"loading"
         if (data.categoryIcon!=null) toolbar.logo=getDrawable(data.categoryIcon as Int)
