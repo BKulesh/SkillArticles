@@ -7,6 +7,7 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.method.ScrollingMovementMethod
 import android.util.Log
+import android.view.AbsSavedState
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
@@ -44,10 +45,10 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
         val vmFactory=ViewModelFactory("0")
         ViewModelProviders.of(this,vmFactory).get(ArticleViewModel::class.java)
     }
-    override val binding: Binding by lazy { ArticleBinding() }
+    override val binding: ArticleBinding by lazy { ArticleBinding() }
 
-    private var isSearching: Boolean=false
-    private var searchQuery: String?= null
+    //private var isSearching: Boolean=false
+    //private var searchQuery: String?= null
 
     private val bgColor by AttrValue(R.attr.colorSecondary)
     private val fgColor by AttrValue(R.attr.colorOnSecondary)
@@ -86,6 +87,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
         clearSearchResult()
         //val bgColor= Color.RED
         //val fgColor=Color.WHITE
+        //Log.e("Debug","renderSearchResult text="+tv_text_content.text)
         searchResult.forEach{(start,end)->
             content.setSpan(SearchSpan(bgColor,fgColor),start,end,SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
@@ -133,10 +135,12 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
         searchView?.queryHint=getString(R.string.article_search_placeholder)
 
 
-        if (isSearching){
+        if (binding.isSearch){
             menuItem?.expandActionView()
-            searchView?.setQuery(searchQuery,false)
-            //searchView?.clearFocus()
+            searchView?.setQuery(binding.searchQuery,false)
+
+            if (binding.isFocusedSearch) searchView?.requestFocus()
+            else searchView?.clearFocus()
         }
 
         //return super.onCreateOptionsMenu(menu)
@@ -291,6 +295,9 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
     }
 
     inner class  ArticleBinding(): Binding(){
+        var isFocusedSearch:Boolean=false
+        //private var isSearching: Boolean=false
+        var searchQuery: String?= null
 
         private var isLoadingContent by ObserveProp(true)
 
@@ -347,7 +354,9 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
                     renderSearchResult(sr)
                     renderSearchPosition(sp)
                 }
-
+                if (!ilc && !iss) {
+                    clearSearchResult()
+                }
                 bottombar.bindSearchInfo(sr.size,sp)
             }
 
@@ -364,6 +373,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
             if (data.title!=null) title=data.title
             if (data.category!=null) category=data.category
             if (data.categoryIcon!=null) categoryIcon=data.categoryIcon as Int
+            if (data.content.isNotEmpty()) content=data.content.first() as String
 
             isLoadingContent=data.isLoadingContent
             isSearch=data.isSearch
@@ -372,7 +382,16 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
             searchResults=data.searchResults
         }
 
+        override fun saveUI(outState: Bundle){
+            outState.putBoolean(::isFocusedSearch.name,search_view.hasFocus())
+        }
+
+        override fun restoreUI(savedState: Bundle){
+            isFocusedSearch=savedState.getBoolean(::isFocusedSearch.name)
+        }
+
     }
+
 
 }
 
