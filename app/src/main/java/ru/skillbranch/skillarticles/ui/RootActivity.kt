@@ -29,6 +29,7 @@ import ru.skillbranch.skillarticles.ui.base.Binding
 import ru.skillbranch.skillarticles.ui.custom.SearchFocusSpan
 import ru.skillbranch.skillarticles.ui.custom.SearchSpan
 import ru.skillbranch.skillarticles.ui.delegates.AttrValue
+import ru.skillbranch.skillarticles.ui.delegates.ObserveProp
 import ru.skillbranch.skillarticles.ui.delegates.RenderProp
 import ru.skillbranch.skillarticles.viewmodels.*
 import ru.skillbranch.skillarticles.viewmodels.base.IViewModelState
@@ -39,7 +40,10 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
     IArticleView {
     //      constructor()
     override val layout: Int = R.layout.activity_root
-    override lateinit var viewModel: ArticleViewModel
+    override val viewModel: ArticleViewModel by lazy{
+        val vmFactory=ViewModelFactory("0")
+        ViewModelProviders.of(this,vmFactory).get(ArticleViewModel::class.java)
+    }
     override val binding: Binding by lazy { ArticleBinding() }
 
     private var isSearching: Boolean=false
@@ -48,31 +52,15 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
     private val bgColor by AttrValue(R.attr.colorSecondary)
     private val fgColor by AttrValue(R.attr.colorOnSecondary)
 
-
+/*
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //setContentView(R.layout.activity_root)
-
-
-        //btn_like.setOnClickListener {
-        //    Snackbar.make(coordinator_container, "test", Snackbar.LENGTH_LONG)
-        //        .setAnchorView(bottombar)
-        //        .show()
-        //}
-
-        //switch_mode.setOnClickListener{
-        //    delegate.localNightMode=if (switch_mode.isChecked) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
-        //}
 
         val vmFactory=
             ViewModelFactory("0")
         viewModel=ViewModelProviders.of(this,vmFactory).get(ArticleViewModel::class.java)
         viewModel.observeState(this) {
             renderUi(it)
-            //if (it.isSearch) {
-            //    isSearching=true
-            //    searchQuery=it.searchQuery
-            //}
         }
 
         viewModel.observeNotifications(this){
@@ -80,7 +68,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
         }
 
     }
-
+*/
 
 
 
@@ -240,6 +228,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
         }
     }
 
+    /*
     private fun renderUi(data:ArticleState){
         Log.e("RootActivity","renderUi:$data")
         //bottombar.setSearchState(data.isSearch)
@@ -283,7 +272,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
         toolbar.subtitle=data.category?:"loading"
         if (data.categoryIcon!=null) toolbar.logo=getDrawable(data.categoryIcon as Int)
 
-    }
+    }*/
 
 
     private fun setupToolbar() {
@@ -292,7 +281,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
         val logo:ImageView?= if(toolbar.childCount>2) toolbar.getChildAt(2) as ImageView else null
         logo?.scaleType=ImageView.ScaleType.CENTER_CROP
         val lp=logo?.layoutParams as  Toolbar.LayoutParams
-        lp?.let {
+        lp.let {
             it.width=this.dpToIntPx(40)
             it.height=this.dpToIntPx(40)
             it.marginEnd=this.dpToIntPx(16)
@@ -302,6 +291,9 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
     }
 
     inner class  ArticleBinding(): Binding(){
+
+        private var isLoadingContent by ObserveProp(true)
+
         private var isLike:Boolean by RenderProp(false){btn_like.isChecked=it}
         private var isBookMark:Boolean by RenderProp(false){btn_bookmark.isChecked=it}
         private var isShowMenu:Boolean by RenderProp(false){
@@ -309,7 +301,55 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
             if (it) submenu.open() else submenu.close()
         }
 
-        override fun onFininishInfale() {
+        private var title:String by RenderProp("loading") {toolbar.title=it}
+        private var category: String by RenderProp("loading") {toolbar.subtitle=it}
+        private var categoryIcon: Int by RenderProp(R.drawable.logo_placeholder) {toolbar.logo=getDrawable(it)}
+
+        private var isBigText:Boolean by RenderProp(false){
+            if (it) {
+                tv_text_content.textSize=18f
+                btn_text_up.isChecked=true
+                btn_text_down.isChecked=false
+            }
+            else {
+                tv_text_content.textSize=14f
+                btn_text_up.isChecked=false
+                btn_text_down.isChecked=true
+            }
+        }
+
+        private var isDarkMode: Boolean by RenderProp(false,false){
+            switch_mode.isChecked=it
+            delegate.localNightMode= if (it) AppCompatDelegate.MODE_NIGHT_YES
+            else AppCompatDelegate.MODE_NIGHT_NO
+        }
+
+        var isSearch: Boolean by ObserveProp(false){
+            if (it) showSearchBar() else hideSearchBar()
+        }
+
+        private var searchResults: List<Pair<Int,Int>> by ObserveProp(emptyList())
+        private var searchPosition: Int by ObserveProp(0)
+
+        private var content: String by ObserveProp("loading"){
+            tv_text_content.setText(it,TextView.BufferType.SPANNABLE)
+            tv_text_content.movementMethod=ScrollingMovementMethod()
+        }
+
+        override fun onFininishInflate() {
+            dependsOn<Boolean,Boolean,List<Pair<Int,Int>>,Int>(
+                ::isLoadingContent,
+                ::isSearch,
+                ::searchResults,
+                ::searchPosition
+            ){ilc,iss,sr,sp->
+                if (!ilc && iss) {
+                    renderSearchResult(sr)
+                    renderSearchPosition(sp)
+                }
+
+                bottombar.bindSearchInfo(sr.size,sp)
+            }
 
         }
 
@@ -318,6 +358,18 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
             isLike=data.isLike
             isBookMark=data.isBookmark
             isShowMenu=data.isShowMenu
+            isBigText=data.isBigText
+            isDarkMode=data.isDarkMode
+
+            if (data.title!=null) title=data.title
+            if (data.category!=null) category=data.category
+            if (data.categoryIcon!=null) categoryIcon=data.categoryIcon as Int
+
+            isLoadingContent=data.isLoadingContent
+            isSearch=data.isSearch
+            searchQuery=data.searchQuery
+            searchPosition=data.searchPosition
+            searchResults=data.searchResults
         }
 
     }
