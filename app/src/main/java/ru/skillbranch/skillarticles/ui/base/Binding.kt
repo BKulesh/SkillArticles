@@ -11,8 +11,8 @@ abstract class Binding {
 
     abstract fun onFininishInflate()
     abstract fun bind(data:IViewModelState)
-    fun saveUI(outState: Bundle){}
-    fun restoreUI(savedState: Bundle){}
+    abstract fun saveUI(outState: Bundle)
+    abstract fun restoreUI(savedState: Bundle)
 
     fun <A,B,C,D>dependsOn(vararg fields:KProperty<*>,onChange:(A,B,C,D)->Unit){
         check(fields.size==4) {"Names size must be 4, current ${fields.size} "}

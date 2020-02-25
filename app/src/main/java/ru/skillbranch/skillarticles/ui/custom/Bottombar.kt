@@ -90,7 +90,7 @@ class Bottombar @JvmOverloads constructor(
             btn_result_down.isEnabled=true
             btn_result_up.isEnabled=true
         }
-
+        //Log.e("Debug","bindSearchInfo postion=$position searchCount=$searchCount")
         when(position){
             0-> btn_result_up.isEnabled=false
             searchCount-1 -> btn_result_down.isEnabled=false

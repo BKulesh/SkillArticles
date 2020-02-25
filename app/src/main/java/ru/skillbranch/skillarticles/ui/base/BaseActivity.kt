@@ -24,4 +24,16 @@ abstract class BaseActivity<T:BaseViewModel<out IViewModelState>> : AppCompatAct
         viewModel.observeNotifications(this){renderNotification(it)}
     }
 
+    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
+        viewModel.saveState(outState)
+        binding.saveUI(outState)
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        viewModel.restoreState(savedInstanceState)
+        binding.restoreUI(savedInstanceState)
+    }
+
 }
