@@ -45,13 +45,13 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
         val vmFactory=ViewModelFactory("0")
         ViewModelProviders.of(this,vmFactory).get(ArticleViewModel::class.java)
     }
-    override val binding: ArticleBinding by lazy { ArticleBinding() }
+    public override val binding: ArticleBinding by lazy { ArticleBinding() }
 
     //private var isSearching: Boolean=false
     //private var searchQuery: String?= null
 
-    private val bgColor by AttrValue(R.attr.colorSecondary)
-    private val fgColor by AttrValue(R.attr.colorOnSecondary)
+    val bgColor by AttrValue(R.attr.colorSecondary)
+    val fgColor by AttrValue(R.attr.colorOnSecondary)
 
 /*
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -383,7 +383,8 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
         }
 
         override fun saveUI(outState: Bundle){
-            outState.putBoolean(::isFocusedSearch.name,search_view.hasFocus())
+            if (search_view==null) Log.e("Debug","saveUI is NULL")
+            outState.putBoolean(::isFocusedSearch.name,search_view?.hasFocus()?:false)
         }
 
         override fun restoreUI(savedState: Bundle){

@@ -21,6 +21,7 @@ fun String?.indexesOf(substr: String, ignoreCase: Boolean = true): List<Int>{
     //lst.add(k)
     //Log.e("Debug","String.indexesOf $k $substr ")
     //Log.e("Debug","handleSearch String.indexesOf before while")
+    if (substr=="") return  lst
     while (this.indexOf(substr,i,ignoreCase)!=-1) {
         k=this.indexOf(substr,i,ignoreCase)
         //Log.e("Debug","io_index circle step $k ")
