@@ -82,7 +82,7 @@ class Bottombar @JvmOverloads constructor(
     fun bindSearchInfo(searchCount: Int =0, position: Int=0)
     {
         if (searchCount==0) {
-            tv_search_result.text="Not fount"
+            tv_search_result.text="Not found"
             btn_result_down.isEnabled=false
             btn_result_up.isEnabled=false
         } else {
