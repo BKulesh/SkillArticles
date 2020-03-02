@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.os.PersistableBundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModel
 import ru.skillbranch.skillarticles.viewmodels.base.BaseViewModel
 import ru.skillbranch.skillarticles.viewmodels.base.IViewModelState
 import ru.skillbranch.skillarticles.viewmodels.base.Notify
+import ru.skillbranch.skillarticles.viewmodels.base.ViewModelDelegate
 
 abstract class BaseActivity<T:BaseViewModel<out IViewModelState>> : AppCompatActivity() {
     protected abstract val binding: Binding;
@@ -15,6 +17,7 @@ abstract class BaseActivity<T:BaseViewModel<out IViewModelState>> : AppCompatAct
 
     abstract fun setupViews()
     abstract fun renderNotification(notify: Notify)
+    internal inline fun provideViewModel(arg : Any?) =ViewModelDelegate(ViewModel::class.java,arg)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

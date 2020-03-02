@@ -9,11 +9,8 @@ import kotlin.reflect.KProperty
 class ViewModelDelegate<T : ViewModel>(private val clazz: Class<T>, private val arg: Any?) : ReadOnlyProperty<FragmentActivity, T>
 {
     override fun getValue(thisRef: FragmentActivity, property: KProperty<*>): T {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        val g=ArticleViewModel(arg as String)
-        if (arg?.javaClass?.name.toString()=="IViewModelState") return BaseViewModel(g)
+        return ViewModelFactory(arg) as T
     }
-
 }
 
 
