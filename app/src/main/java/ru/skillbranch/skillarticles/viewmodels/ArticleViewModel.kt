@@ -198,6 +198,7 @@ data class ArticleState(
     val reviews: List<Any> = emptyList() // комментарии
 ): IViewModelState{
     override fun save(outState: Bundle) {
+        Log.e("Debug","IViewModelState save $searchResults")
         outState.putAll(
             bundleOf(
                 "isSearch" to isSearch,
@@ -209,10 +210,11 @@ data class ArticleState(
     }
 
     override fun restore(savedState: Bundle): IViewModelState {
+        Log.e("Debug","IViewModelState restore ")
         return copy(
             isSearch=savedState["isSearch"] as Boolean,
-            searchQuery = savedState["searchQuery"] as String,
-            searchResults = savedState["searchResult"] as List<Pair<Int,Int>>,
+            searchQuery = savedState["searchQuery"] as? String,
+            searchResults = savedState["searchResults"] as List<Pair<Int,Int>>,
             searchPosition = savedState["searchPosition"] as Int
         )
     }

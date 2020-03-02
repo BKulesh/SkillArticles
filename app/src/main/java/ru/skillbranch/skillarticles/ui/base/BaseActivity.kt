@@ -2,6 +2,7 @@ package ru.skillbranch.skillarticles.ui.base
 
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import ru.skillbranch.skillarticles.viewmodels.base.BaseViewModel
 import ru.skillbranch.skillarticles.viewmodels.base.IViewModelState
@@ -24,7 +25,8 @@ abstract class BaseActivity<T:BaseViewModel<out IViewModelState>> : AppCompatAct
         viewModel.observeNotifications(this){renderNotification(it)}
     }
 
-    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
+    override fun onSaveInstanceState(outState: Bundle) {
+        Log.e("Debug","onSaveInstanceState")
         viewModel.saveState(outState)
         binding.saveUI(outState)
         super.onSaveInstanceState(outState)
