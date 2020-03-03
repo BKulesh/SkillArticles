@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import ru.skillbranch.skillarticles.viewmodels.ArticleViewModel
 import java.lang.IllegalArgumentException
 
-class ViewModelFactory(private val params: Any): ViewModelProvider.Factory {
+class ViewModelFactory(private val params: Any?): ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ArticleViewModel::class.java)) {
             return ArticleViewModel(
