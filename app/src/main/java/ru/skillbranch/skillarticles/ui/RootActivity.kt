@@ -218,6 +218,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
 
         btn_result_up.setOnClickListener{
             if (search_view.hasFocus()) search_view.clearFocus()
+            if (!tv_text_content.hasFocus()) tv_text_content.requestFocus()
             viewModel.handleUpResult()
         }
 
@@ -373,7 +374,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
             if (data.title!=null) title=data.title
             if (data.category!=null) category=data.category
             if (data.categoryIcon!=null) categoryIcon=data.categoryIcon as Int
-            if (data.content.isNotEmpty()) content=data.content.first() as String
+            if (data.content!=null) content=data.content.first() as String
 
             isLoadingContent=data.isLoadingContent
             isSearch=data.isSearch
