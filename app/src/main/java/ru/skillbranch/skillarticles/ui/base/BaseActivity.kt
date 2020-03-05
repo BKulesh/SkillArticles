@@ -17,7 +17,7 @@ abstract class BaseActivity<T:BaseViewModel<out IViewModelState>> : AppCompatAct
 
     abstract fun setupViews()
     abstract fun renderNotification(notify: Notify)
-    internal inline fun provideViewModel(arg : Any?) =ViewModelDelegate(ViewModel::class.java,arg)
+    internal inline fun<reified T:ViewModel> provideViewModel(arg : Any?) =ViewModelDelegate(T::class.java,arg)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
