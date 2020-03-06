@@ -357,7 +357,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
                 if (!ilc && !iss) {
                     clearSearchResult()
                 }
-                bottombar.bindSearchInfo(sr.size,sp)
+                 bottombar.bindSearchInfo(sr.size,sp)
             }
 
         }
