@@ -1,4 +1,4 @@
 package ru.skillbranch.skillarticles.markdown;
 
-public class MarkdownBuilder {
+public class MarkdownBuilder     {
 }

@@ -6,8 +6,9 @@ object MarkdownParser {
     private val LINE_SEPARATOR=System.getProperty("line.separator") ?: "\n"
 
     private const val UNORDERED_LIST_ITEM_GROUP = "(^[*+-] .+$)"
+    private const val HEADER_GROUP = "(^#{1,6} .+?$)"
 
-    const val MARKDOWN_GROUPS="$UNORDERED_LIST_ITEM_GROUP"
+    private const val MARKDOWN_GROUPS="$UNORDERED_LIST_ITEM_GROUP|$HEADER_GROUP"
 
     private val elementsPatten by lazy{Pattern.compile(MARKDOWN_GROUPS,Pattern.MULTILINE)}
 
@@ -37,7 +38,7 @@ object MarkdownParser {
 
             var text: CharSequence
 
-            val groups=1..1
+            val groups=1..2
             var group=-1
             for(gr in groups){
                 if(matcher.group(gr)!=null){
@@ -57,6 +58,19 @@ object MarkdownParser {
 
                     lastStartIndex=endIndex
                 }
+                2->{
+                    val reg="^#{1,6}".toRegex().find(string.subSequence(startIndex,endIndex))
+                    val level=reg!!.value.length
+                    text=string.subSequence(startIndex.plus(level.inc()),endIndex)
+                    val element=Element.Header(level,text)
+                    parents.add(element)
+                    lastStartIndex=endIndex
+                }
+            }
+
+            if (lastStartIndex<string.length) {
+                val text=string.subSequence(lastStartIndex,string.length)
+                parents.add(Element.Text(text))
             }
 
         }
@@ -79,6 +93,12 @@ sealed class Element(){
     data class UnorderedListItem(
      override val text: CharSequence,
      override val elements: List<Element> = emptyList()
+    ): Element()
+
+    data class Header(
+        val level: Int=1,
+        override val text: CharSequence,
+        override val elements: List<Element> = emptyList()
     ): Element()
 
 }

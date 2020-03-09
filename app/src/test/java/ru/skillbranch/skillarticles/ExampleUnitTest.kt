@@ -19,7 +19,41 @@ class ExampleUnitTest {
         val result=MarkdownParser.parse(unorderedListString)
        val actual = prepare<Element.UnorderedListItem>(result.elements)
        assertEquals(expectedUnorderedList,actual)
+
+       printResults(actual)
+       println("")
+       printElements(result.elements)
+
    }
+
+
+    @Test
+    fun parse_header(){
+        val result=MarkdownParser.parse(headerString)
+        val actual = prepare<Element.Header>(result.elements)
+        assertEquals(expectedHeader,actual)
+
+        printResults(actual)
+        println("")
+        printElements(result.elements)
+
+    }
+
+    private fun printResults(list: List<String>)
+    {
+        val iterator=list.iterator()
+        while (iterator.hasNext()) {
+            print ("find >>  ${iterator.next()}")
+        }
+    }
+
+    private fun printElements(list: List<Element>)
+    {
+        val iterator=list.iterator()
+        while (iterator.hasNext()) {
+            print ("element >>  ${iterator.next()}")
+        }
+    }
 
     private fun Element.spread(): List<Element>{
         val elements= mutableListOf<Element>()
