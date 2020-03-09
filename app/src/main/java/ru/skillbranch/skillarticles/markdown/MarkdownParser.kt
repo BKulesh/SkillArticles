@@ -7,8 +7,15 @@ object MarkdownParser {
 
     private const val UNORDERED_LIST_ITEM_GROUP = "(^[*+-] .+$)"
     private const val HEADER_GROUP = "(^#{1,6} .+?$)"
+    private const val QUOTE_GROUP = "(^> .+?$)"
+    private const val ITALIC_GROUP = "((?<!\\*)\\*[^*].*?[^*]?\\*(?!\\*)|(?<!_)_[^_].*?[^_]?_(?!_))"
+    private const val BOLD_GROUP = "((?<!\\*)\\*{2}[^*].*?[^*]?\\*{2}(?!\\*)|(?<!_)_{2}[^_].*?[^_]?_{2}(?!_))"
+    private const val STRIKE_GROUP = "((?<!\\~)\\~{2}[^~].*?[^~]?\\~{2}(?!\\~))"
+    private const val RULE_GROUP = "(^[_*-]{3}$)"
+    private const val INLINE_GROUP = "((?<!`)`[^`\\s].*?[^`\\s]?`(?!`))"
+    private const val LINK_GROUP = "(\\[[^\\[\\]]*?]\\(.+?\\)|^\\[*?]\\(.*?\\))"
 
-    private const val MARKDOWN_GROUPS="$UNORDERED_LIST_ITEM_GROUP|$HEADER_GROUP"
+    private const val MARKDOWN_GROUPS="$UNORDERED_LIST_ITEM_GROUP|$HEADER_GROUP|$QUOTE_GROUP|$ITALIC_GROUP|$BOLD_GROUP|$STRIKE_GROUP|$RULE_GROUP|$INLINE_GROUP|$LINK_GROUP"
 
     private val elementsPatten by lazy{Pattern.compile(MARKDOWN_GROUPS,Pattern.MULTILINE)}
 
@@ -38,7 +45,7 @@ object MarkdownParser {
 
             var text: CharSequence
 
-            val groups=1..2
+            val groups=1..9
             var group=-1
             for(gr in groups){
                 if(matcher.group(gr)!=null){
@@ -65,6 +72,61 @@ object MarkdownParser {
                     val element=Element.Header(level,text)
                     parents.add(element)
                     lastStartIndex=endIndex
+                }
+                3->{
+                    //val reg="^>".toRegex().find(string.subSequence(startIndex,endIndex))
+                    //val level=reg!!.value.length
+                    text=string.subSequence(startIndex.plus(2),endIndex)
+                    val subelements=findElements(text)
+
+                    val element=Element.Quote(text,subelements)
+                    parents.add(element)
+                    lastStartIndex=endIndex
+                }
+                4->{
+                    text=string.subSequence(startIndex.inc(),endIndex.dec())
+                    val subelements=findElements(text)
+
+                    val element=Element.Italic(text,subelements)
+                    parents.add(element)
+                    lastStartIndex=endIndex
+                }
+                5->{
+                    text=string.subSequence(startIndex.plus(2),endIndex.plus(-2))
+                    val subelements=findElements(text)
+
+                    val element=Element.Bold(text,subelements)
+                    parents.add(element)
+                    lastStartIndex=endIndex
+                }
+                6->{
+                    text=string.subSequence(startIndex.plus(2),endIndex.plus(-2))
+                    val subelements=findElements(text)
+
+                    val element=Element.Strike(text,subelements)
+                    parents.add(element)
+                    lastStartIndex=endIndex
+                }
+                7->{
+                    val element=Element.Rule()
+                    parents.add(element)
+                    lastStartIndex=endIndex
+                }
+                8->{
+                    text=string.subSequence(startIndex.inc(),endIndex.dec())
+
+                    val element=Element.InlineCode(text)
+                    parents.add(element)
+                    lastStartIndex=endIndex
+
+                }
+                9->{
+                    text=string.subSequence(startIndex,endIndex)
+                    val (title: String, link : String)="\\[(.*)]\\((.*)\\)".toRegex().find(text)!!.destructured
+                    val element=Element.Link(text=title,link=link)
+                    parents.add(element)
+                    lastStartIndex=endIndex
+
                 }
             }
 
@@ -98,6 +160,42 @@ sealed class Element(){
     data class Header(
         val level: Int=1,
         override val text: CharSequence,
+        override val elements: List<Element> = emptyList()
+    ): Element()
+
+    data class Quote(
+        override val text: CharSequence,
+        override val elements: List<Element> = emptyList()
+    ): Element()
+
+    data class Italic(
+        override val text: CharSequence,
+        override val elements: List<Element> = emptyList()
+    ): Element()
+
+    data class Bold(
+        override val text: CharSequence,
+        override val elements: List<Element> = emptyList()
+    ): Element()
+
+    data class Strike(
+        override val text: CharSequence,
+        override val elements: List<Element> = emptyList()
+    ): Element()
+
+    data class Rule(
+        override val text: CharSequence=" ",
+        override val elements: List<Element> = emptyList()
+    ): Element()
+
+    data class InlineCode(
+        override val text: CharSequence=" ",
+        override val elements: List<Element> = emptyList()
+    ): Element()
+
+    data class Link(
+        val link: String,
+        override val text: CharSequence=" ",
         override val elements: List<Element> = emptyList()
     ): Element()
 
