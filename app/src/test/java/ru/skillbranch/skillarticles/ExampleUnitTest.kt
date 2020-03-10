@@ -39,6 +39,36 @@ class ExampleUnitTest {
 
     }
 
+
+    @Test
+    fun parse_all() {
+        val result = MarkdownParser.parse(markdownString)
+        val actualUnorderedList = prepare<Element.UnorderedListItem>(result.elements)
+        val actualHeaders = prepare<Element.Header>(result.elements)
+        val actualQuotes = prepare<Element.Quote>(result.elements)
+        val actualItalic = prepare<Element.Italic>(result.elements)
+        val actualBold = prepare<Element.Bold>(result.elements)
+        val actualStrike = prepare<Element.Strike>(result.elements)
+        val actualRule = prepare<Element.Rule>(result.elements)
+        val actualInline = prepare<Element.InlineCode>(result.elements)
+        val actualLinkTitles = prepare<Element.Link>(result.elements)
+        val actualLinks = result.elements.spread()
+            .filterIsInstance<Element.Link>()
+            .map { it.link }
+
+        assertEquals(expectedMarkdown["unorderedList"], actualUnorderedList)
+        assertEquals(expectedMarkdown["header"], actualHeaders)
+        assertEquals(expectedMarkdown["quote"], actualQuotes)
+        assertEquals(expectedMarkdown["italic"], actualItalic)
+        assertEquals(expectedMarkdown["bold"], actualBold)
+        //assertEquals(expectedMarkdown["strike"], actualStrike)
+        assertEquals(3, actualRule.size)
+        assertEquals(expectedMarkdown["inline"], actualInline)
+        assertEquals(expectedMarkdown["linkTitles"], actualLinkTitles)
+        assertEquals(expectedMarkdown["links"], actualLinks)
+    }
+
+
     private fun printResults(list: List<String>)
     {
         val iterator=list.iterator()
