@@ -5,6 +5,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.util.TypedValue
+import ru.skillbranch.skillarticles.ui.delegates.AttrValue
 
 fun Context.dpToPx(dp: Int): Float {
     return TypedValue.applyDimension(
@@ -23,6 +24,12 @@ fun Context.dpToIntPx(dp: Int): Int {
     ).toInt()
 }
 
+fun Context.attrValue (value: Int): Int
+{
+    //val attr_value by AttrValue(value)
+    return value
+}
+
 val Context.isNetworkAvailable: Boolean
     get() {
         val cm = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -37,3 +44,4 @@ val Context.isNetworkAvailable: Boolean
             cm.activeNetworkInfo?.run { isConnectedOrConnecting } ?: false
         }
     }
+
