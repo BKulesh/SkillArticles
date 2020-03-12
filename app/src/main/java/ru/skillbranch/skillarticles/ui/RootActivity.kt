@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.Selection
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.SpannedString
 import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.AbsSavedState
@@ -345,6 +346,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
             MarkdownBuilder(this@RootActivity)
                 .markdownToSpan(it)
                 .run{
+                    Log.e("Debug","markdownToSpanresult=  ${this.toString()} ")
                     tv_text_content.setText(this,TextView.BufferType.SPANNABLE)
                 }
             //tv_text_content.setText(it,TextView.BufferType.SPANNABLE)

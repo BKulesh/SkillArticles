@@ -111,6 +111,12 @@ data class AppSettings(
     val isBigText: Boolean = false
 )
 
+//val longText: String = """*test*
+//* test1
+//* test2
+//* test3
+//* test4"""
+
 val longText: String = """
 before header text
 # Header1 first line margin middle line without margin last line with margin

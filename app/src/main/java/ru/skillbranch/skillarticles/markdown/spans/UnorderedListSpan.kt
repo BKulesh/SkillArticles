@@ -4,6 +4,7 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.text.Layout
 import android.text.style.LeadingMarginSpan
+import android.util.Log
 import androidx.annotation.ColorInt
 import androidx.annotation.Px
 
@@ -18,6 +19,7 @@ class UnorderedListSpan(
 ) : LeadingMarginSpan {
 
     override fun getLeadingMargin(first: Boolean): Int {
+        Log.e("Debug","getLeadingMargin  "+(4*bulletRadius+gapWidth).toInt().toString())
         return (4*bulletRadius+gapWidth).toInt()
     }
 

@@ -1,5 +1,6 @@
 package ru.skillbranch.skillarticles.markdown
 
+import android.util.Log
 import java.util.regex.Pattern
 
 object MarkdownParser {
@@ -35,11 +36,13 @@ object MarkdownParser {
         val matcher = elementsPatten.matcher(string)
         var lastStartIndex=0
 
-        loop@while (matcher.find(lastStartIndex)) {
+        Log.e("Debug","findElements START $string ")
+
+        loop@ while (matcher.find(lastStartIndex)) {
             val startIndex=matcher.start()
             val endIndex=matcher.end()
 
-            if(lastStartIndex<startIndex){
+            if(lastStartIndex < startIndex){
                 parents.add(Element.Text(string.subSequence(lastStartIndex,startIndex)))
             }
 
@@ -54,6 +57,8 @@ object MarkdownParser {
                 }
             }
 
+            Log.e("Debug"," parse_group $group ")
+
             when(group) {
                 -1 -> break@loop
                 1->{
@@ -61,6 +66,7 @@ object MarkdownParser {
 
                     val subs= findElements(text)
                     val element=Element.UnorderedListItem(text,subs)
+                    Log.e("Debug"," parse_UnorderedListItem $text ")
                     parents.add(element)
 
                     lastStartIndex=endIndex
@@ -130,11 +136,11 @@ object MarkdownParser {
                 }
             }
 
-            if (lastStartIndex<string.length) {
-                val text=string.subSequence(lastStartIndex,string.length)
-                parents.add(Element.Text(text))
-            }
+        }
 
+        if (lastStartIndex < string.length) {
+            val text=string.subSequence(lastStartIndex,string.length)
+            parents.add(Element.Text(text))
         }
 
         return parents
