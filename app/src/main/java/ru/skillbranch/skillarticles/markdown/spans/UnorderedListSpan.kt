@@ -29,6 +29,12 @@ class UnorderedListSpan(
         lineEnd: Int, isFirstLine: Boolean, layout: Layout?
     ) {
         //TODO implement me
+        if (isFirstLine) {
+            val oldColor=paint.color
+            paint.color=bulletColor
+            canvas.drawCircle(gapWidth+currentMarginLocation+bulletRadius,(lineTop+lineBottom)/2f,bulletRadius,paint)
+            paint.color=oldColor
+        }
     }
 
     private inline fun Paint.withCustomColor(block: () -> Unit) {

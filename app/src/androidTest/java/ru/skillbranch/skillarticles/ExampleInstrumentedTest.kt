@@ -3,6 +3,7 @@ package ru.skillbranch.skillarticles
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.text.Layout
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.Spanned
@@ -28,7 +29,7 @@ import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
-import org.mockito.Mockito.mock
+import org.mockito.Mockito.*
 import ru.skillbranch.skillarticles.data.LocalDataHolder
 import ru.skillbranch.skillarticles.data.NetworkDataHolder
 import ru.skillbranch.skillarticles.extensions.indexesOf
@@ -58,14 +59,30 @@ class ExampleInstrumentedTest1 {
 
         val canvasWidth=700
         val defaultColor=Color.GRAY
+
         val canvas=mock(Canvas::class.java)
         val paint=mock(Paint::class.java)
+        `when`(paint.color).thenReturn(defaultColor)
+        val layout=mock(Layout::class.java)
+
+        val cml=0
+        val ltop=0
+        val lbase=60
+        val lbottom=80
 
         val text= SpannableString("text")
         val span=UnorderedListSpan(gap,radius,color)
         text.setSpan(span,0,text.length,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
         assertEquals((4*radius+gap).toInt(),span.getLeadingMargin(true))
+
+        span.drawLeadingMargin(canvas,paint,cml,1,ltop,lbase,lbottom,text,0,text.length,true ,layout)
+
+        val inOrder=inOrder(paint,canvas)
+        inOrder.verify(paint).color=color
+        inOrder.verify(canvas).drawCircle(gap+cml+radius,(lbottom-ltop)/2f+ltop,radius,paint)
+        inOrder.verify(paint).color=defaultColor
+
     }
 
 }
