@@ -76,6 +76,7 @@ object MarkdownParser {
                     val level=reg!!.value.length
                     text=string.subSequence(startIndex.plus(level.inc()),endIndex)
                     val element=Element.Header(level,text)
+                    //Log.e("Debug"," parse_Qoute $text ")
                     parents.add(element)
                     lastStartIndex=endIndex
                 }
@@ -86,6 +87,7 @@ object MarkdownParser {
                     val subelements=findElements(text)
 
                     val element=Element.Quote(text,subelements)
+                    Log.e("Debug"," parse_Qoute $text ")
                     parents.add(element)
                     lastStartIndex=endIndex
                 }

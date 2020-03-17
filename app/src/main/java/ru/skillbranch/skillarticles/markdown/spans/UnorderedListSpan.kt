@@ -28,16 +28,30 @@ class UnorderedListSpan(
         lineTop: Int, lineBaseline: Int, lineBottom: Int, text: CharSequence?, lineStart: Int,
         lineEnd: Int, isFirstLine: Boolean, layout: Layout?
     ) {
-        //TODO implement me
         if (isFirstLine) {
-            val oldColor=paint.color
-            paint.color=bulletColor
-            canvas.drawCircle(gapWidth+currentMarginLocation+bulletRadius,(lineTop+lineBottom)/2f,bulletRadius,paint)
-            paint.color=oldColor
+            //val oldColor=paint.color
+            paint.withCustomColor {
+                //paint.color = bulletColor
+                canvas.drawCircle(
+                    gapWidth + currentMarginLocation + bulletRadius,
+                    (lineTop + lineBottom) / 2f,
+                    bulletRadius,
+                    paint
+                )
+                //paint.color=oldColor
+            }
         }
     }
 
     private inline fun Paint.withCustomColor(block: () -> Unit) {
-        //TODO implement me
+        val oldColor=color
+        val oldStyle=style
+
+        color=bulletColor
+        style=Paint.Style.FILL
+
+        block()
+        color=oldColor
+        style=oldStyle
     }
 }
