@@ -8,6 +8,7 @@ import android.text.style.StyleSpan
 import android.util.Log
 import androidx.core.text.buildSpannedString
 import androidx.core.text.inSpans
+import androidx.core.text.italic
 import ru.skillbranch.skillarticles.R
 import ru.skillbranch.skillarticles.extensions.attrValue
 import ru.skillbranch.skillarticles.extensions.dpToPx
@@ -67,6 +68,18 @@ class MarkdownBuilder(context: Context) {
                             inSpans(HeadersSpan(element.level,colorPrimary,colorDevider,headerMarginTop,haderMrginBottom)){
                                 append(element.text)
                             }
+                        }
+                        is Element.Italic-> { inSpans(StyleSpan(Typeface.ITALIC))                            {
+                            for (child in element.elements){
+                                buildElement(child,builder)
+                            }
+                        }
+                        }
+                        is Element.Bold-> { inSpans(StyleSpan(Typeface.BOLD))                            {
+                            for (child in element.elements){
+                                buildElement(child,builder)
+                            }
+                        }
                         }
                         else  -> {append(element.text)
                                   //Log.e("Debug","else append")

@@ -55,10 +55,19 @@ class HeadersSpan constructor(
         val spanEnd = text.getSpanEnd(this)
 
         if (spanStart==start) {
+            originAscent=fm.ascent
             fm.ascent=(fm.ascent-marginTop).toInt()
+        } else {
+            fm.ascent=originAscent
+        }
+
+        if (spanEnd==end.dec()) {
+            val originHeight=fm.descent-originAscent
+            fm.descent=(originHeight*linePadding+marginBottom).toInt()
         }
 
         fm.top=fm.ascent
+        fm.bottom=fm.descent
 
     }
 
