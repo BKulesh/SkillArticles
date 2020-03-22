@@ -26,13 +26,16 @@ import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
+import org.mockito.InOrder
 import org.mockito.Mockito.*
 import ru.skillbranch.skillarticles.data.LocalDataHolder
 import ru.skillbranch.skillarticles.data.NetworkDataHolder
 import ru.skillbranch.skillarticles.extensions.indexesOf
 import ru.skillbranch.skillarticles.extensions.setMarginOptionally
+import ru.skillbranch.skillarticles.markdown.Element
 import ru.skillbranch.skillarticles.markdown.spans.BlockquotesSpan
 import ru.skillbranch.skillarticles.markdown.spans.HeadersSpan
+import ru.skillbranch.skillarticles.markdown.spans.HorizontalRuleSpan
 import ru.skillbranch.skillarticles.markdown.spans.UnorderedListSpan
 import ru.skillbranch.skillarticles.ui.RootActivity
 import ru.skillbranch.skillarticles.ui.custom.SearchFocusSpan
@@ -175,6 +178,36 @@ class ExampleInstrumentedTest1 {
 
     }
 
+    @Test
+    fun draw_rule(){
+        val color= Color.RED
+        val width= 24f
+
+        val canvasWidth=700
+        val defaultColor= Color.GRAY
+        val cml=0
+        val ltop=0
+        val lbase=60
+        val lbottom=80
+
+        val canvas=mock(Canvas::class.java)
+        `when`(canvas.width).thenReturn(canvasWidth)
+        val paint=mock(Paint::class.java)
+        `when`(paint.color).thenReturn(defaultColor)
+        val layout=mock(Layout::class.java)
+
+        val text= SpannableString("text")
+
+        val span= HorizontalRuleSpan(width,color)
+        text.setSpan(span,0,text.length,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        span.draw(canvas,text,0,text.length,cml.toFloat(),ltop,lbase,lbottom,paint)
+
+        val inOrder=InOrder(paint,canvas)
+
+        inOrder.ve
+
+    }
 
 }
 

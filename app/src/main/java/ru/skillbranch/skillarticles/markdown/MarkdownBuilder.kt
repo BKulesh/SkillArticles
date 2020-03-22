@@ -81,7 +81,12 @@ class MarkdownBuilder(context: Context) {
                             }
                         }
                         }
-                        else  -> {append(element.text)
+                        is Element.Strike-> { inSpans()                            {
+                            for (child in element.elements){
+                                buildElement(child,builder)
+                            }
+                        }
+                        }                        else  -> {append(element.text)
                                   //Log.e("Debug","else append")
                             }
                     }
