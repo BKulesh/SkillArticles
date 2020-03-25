@@ -203,9 +203,11 @@ class ExampleInstrumentedTest1 {
 
         span.draw(canvas,text,0,text.length,cml.toFloat(),ltop,lbase,lbottom,paint)
 
-        val inOrder=InOrder(paint,canvas)
+        val InOrder=inOrder(paint,canvas)
 
-        inOrder.ve
+        InOrder.verify(paint).color=color
+
+        InOrder.verify(canvas).drawLine(0f,(ltop+lbottom)/2f,canvasWidth.toFloat(),(ltop-lbottom)/2f,paint)
 
     }
 

@@ -36,10 +36,25 @@ class HorizontalRuleSpan(
         bottom: Int,
         paint: Paint
     ) {
-        //TODO implement me
+        canvas.drawLine(0f,(top+bottom)/2f,canvas.width.toFloat(),(top+bottom)/2f,paint)
     }
 
+
     private inline fun Paint.forLine(block: () -> Unit) {
-        //TODO implement me
+        val oldColor=color
+        val oldStyle=style
+        val oldWidth= strokeWidth
+
+        strokeWidth=ruleWidth
+        color=ruleColor
+        style=Paint.Style.STROKE
+
+        block()
+
+        strokeWidth=oldWidth
+        color=oldColor
+        style=oldStyle
     }
+
+
 }
