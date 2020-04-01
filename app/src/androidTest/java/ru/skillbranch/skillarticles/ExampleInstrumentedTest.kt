@@ -3,6 +3,7 @@ package ru.skillbranch.skillarticles
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.RectF
 import android.text.*
 import android.view.View
 import android.widget.TextView
@@ -26,6 +27,7 @@ import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
+import org.mockito.ArgumentMatchers
 import org.mockito.InOrder
 import org.mockito.Mockito.*
 import ru.skillbranch.skillarticles.data.LocalDataHolder
@@ -33,10 +35,7 @@ import ru.skillbranch.skillarticles.data.NetworkDataHolder
 import ru.skillbranch.skillarticles.extensions.indexesOf
 import ru.skillbranch.skillarticles.extensions.setMarginOptionally
 import ru.skillbranch.skillarticles.markdown.Element
-import ru.skillbranch.skillarticles.markdown.spans.BlockquotesSpan
-import ru.skillbranch.skillarticles.markdown.spans.HeadersSpan
-import ru.skillbranch.skillarticles.markdown.spans.HorizontalRuleSpan
-import ru.skillbranch.skillarticles.markdown.spans.UnorderedListSpan
+import ru.skillbranch.skillarticles.markdown.spans.*
 import ru.skillbranch.skillarticles.ui.RootActivity
 import ru.skillbranch.skillarticles.ui.custom.SearchFocusSpan
 import ru.skillbranch.skillarticles.ui.custom.SearchSpan
@@ -208,6 +207,57 @@ class ExampleInstrumentedTest1 {
         InOrder.verify(paint).color=color
 
         InOrder.verify(canvas).drawLine(0f,(ltop+lbottom)/2f,canvasWidth.toFloat(),(ltop-lbottom)/2f,paint)
+
+        InOrder.verify(paint).color=defaultColor
+
+
+    }
+
+    @Test
+    fun draw_inline_code(){
+
+        val textColor: Int=Color.RED
+        val bgColor: Int=Color.GREEN
+        val cornerRadius: Float =8f
+        val padding: Float =8f
+
+        val canvasWidth=700
+        val defaultColor=Color.GRAY
+        val measureText=100f
+        val cml=0
+        val ltop=0
+        val lbase=60
+        val lbottom=80
+
+        val canvas=mock(Canvas::class.java)
+        `when`(canvas.width).thenReturn(canvasWidth)
+        val paint=mock(Paint::class.java)
+        `when`(paint.color).thenReturn(defaultColor)
+        `when`(paint.measureText(
+            ArgumentMatchers.anyString(),
+            ArgumentMatchers.anyInt(),
+            ArgumentMatchers.anyInt()
+        )).thenReturn(measureText)
+        val layout=mock(Layout::class.java)
+        val fm=mock(Paint.FontMetricsInt::class.java)
+
+        val text= SpannableString("text")
+
+        val span= InlineCodeSpan(textColor,bgColor,cornerRadius,padding)
+        text.setSpan(span,0,text.length,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        val size=span.getSize(paint,text,0,text.length,fm)
+        assertEquals((2*padding+measureText).toInt(),size)
+
+        val inOrder=inOrder(paint,canvas)
+
+        inOrder.verify(paint).color=bgColor
+        inOrder.verify(canvas).drawRoundRect(RectF(0f,ltop.toFloat(),measureText+2*padding,lbottom.toFloat()),cornerRadius,cornerRadius,paint)
+
+        inOrder.verify(paint).color=textColor
+        inOrder.verify(canvas).drawText(text,0,text.length,cml+padding,lbase.toFloat(),paint)
+        inOrder.verify(paint).color=defaultColor
+
 
     }
 

@@ -12,9 +12,7 @@ import androidx.core.text.italic
 import ru.skillbranch.skillarticles.R
 import ru.skillbranch.skillarticles.extensions.attrValue
 import ru.skillbranch.skillarticles.extensions.dpToPx
-import ru.skillbranch.skillarticles.markdown.spans.BlockquotesSpan
-import ru.skillbranch.skillarticles.markdown.spans.HeadersSpan
-import ru.skillbranch.skillarticles.markdown.spans.UnorderedListSpan
+import ru.skillbranch.skillarticles.markdown.spans.*
 import  ru.skillbranch.skillarticles.ui.delegates.AttrValue
 
 class MarkdownBuilder(context: Context) {
@@ -27,6 +25,11 @@ class MarkdownBuilder(context: Context) {
     private val colorDevider=context.attrValue(R.color.color_divider)
     private val headerMarginTop=context.dpToPx(12)
     private val haderMrginBottom=context.dpToPx(8)
+    private val ruleWidth=context.dpToPx(2)
+
+    private val colorOnSurface=context.attrValue(R.attr.colorOnSurface)
+    private val colorSurface=context.attrValue(R.attr.colorSurface)
+    private val cornerRadius=context.dpToPx(8)
     //private val colorSecondary=R.attr.colorSecondary
 
     fun markdownToSpan(string: String): SpannedString {
@@ -86,7 +89,17 @@ class MarkdownBuilder(context: Context) {
                                 buildElement(child,builder)
                             }
                         }
-                        }                        else  -> {append(element.text)
+                        }
+                        is Element.Rule->{inSpans(HorizontalRuleSpan(ruleWidth,colorDevider)){
+                            append(element.text)
+                        }
+                        }
+                        is Element.InlineCode->{
+                            inSpans(InlineCodeSpan(colorOnSurface,colorSurface,cornerRadius,gap)){
+                                append(element.text)
+                            }
+                        }
+                        else  -> {append(element.text)
                                   //Log.e("Debug","else append")
                             }
                     }
