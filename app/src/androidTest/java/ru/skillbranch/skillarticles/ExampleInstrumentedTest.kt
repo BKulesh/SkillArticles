@@ -1,9 +1,8 @@
 package ru.skillbranch.skillarticles
 
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.RectF
+import android.graphics.*
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.VectorDrawable
 import android.text.*
 import android.view.View
 import android.widget.TextView
@@ -260,6 +259,68 @@ class ExampleInstrumentedTest1 {
 
 
     }
+
+
+    @Test
+    fun draw_link(){
+
+        val iconColor: Int=Color.RED
+        val padding: Float=8f
+        val textColor: Int=Color.BLUE
+
+        val bgColor: Int=Color.GREEN
+        val cornerRadius: Float =8f
+
+        val canvasWidth=700
+        val defaultColor=Color.GRAY
+        val measureText=100f
+        val defaultAscent=-30
+        val defaultDescent=10
+
+        val cml=0
+        val ltop=0
+        val lbase=60
+        val lbottom=80
+
+        val canvas=mock(Canvas::class.java)
+        `when`(canvas.width).thenReturn(canvasWidth)
+        val paint=mock(Paint::class.java)
+        `when`(paint.color).thenReturn(defaultColor)
+        `when`(paint.measureText(
+            ArgumentMatchers.anyString(),
+            ArgumentMatchers.anyInt(),
+            ArgumentMatchers.anyInt()
+        )).thenReturn(measureText)
+        val layout=mock(Layout::class.java)
+        val fm=mock(Paint.FontMetricsInt::class.java)
+        fm.ascent=defaultAscent
+        fm.descent=defaultDescent
+
+
+        val linkDrawble: Drawable=spy(VectorDrawable())
+        val path: Path =spy(Path())
+
+        val text= SpannableString("text")
+
+        val span= IconLinkSpan(linkDrawble,iconColor,padding,textColor)
+        text.setSpan(span,0,text.length,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        span.path=path
+
+        val size=span.getSize(paint,text,0,text.length,fm)
+        assertEquals((2*padding+measureText).toInt(),size)
+
+        val inOrder=inOrder(paint,canvas)
+
+        inOrder.verify(paint).color=bgColor
+        inOrder.verify(canvas).drawRoundRect(RectF(0f,ltop.toFloat(),measureText+2*padding,lbottom.toFloat()),cornerRadius,cornerRadius,paint)
+
+        inOrder.verify(paint).color=textColor
+        inOrder.verify(canvas).drawText(text,0,text.length,cml+padding,lbase.toFloat(),paint)
+        inOrder.verify(paint).color=defaultColor
+
+
+    }
+
 
 }
 
