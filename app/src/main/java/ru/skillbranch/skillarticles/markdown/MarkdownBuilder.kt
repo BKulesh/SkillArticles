@@ -5,6 +5,7 @@ import android.graphics.Typeface
 import android.text.SpannableStringBuilder
 import android.text.SpannedString
 import android.text.style.StyleSpan
+import android.text.style.URLSpan
 import android.util.Log
 import androidx.core.text.buildSpannedString
 import androidx.core.text.inSpans
@@ -19,6 +20,7 @@ class MarkdownBuilder(context: Context) {
 
     private val gap: Float=context.dpToPx(8)
     private val bulletRadius=context.dpToPx(4)
+    private val strikeWidth=context.dpToPx(4)
     private val quoteWidth=context.dpToPx(4)
     private val colorSecondary=context.attrValue(R.attr.colorSecondary)
     private val colorPrimary=context.attrValue(R.attr.colorPrimary)
@@ -31,6 +33,7 @@ class MarkdownBuilder(context: Context) {
     private val colorSurface=context.attrValue(R.attr.colorSurface)
     private val cornerRadius=context.dpToPx(8)
     //private val colorSecondary=R.attr.colorSecondary
+    private val linkIcon=context.getDrawable(R.drawable.ic_link_black_24dp)!!
 
     fun markdownToSpan(string: String): SpannedString {
         val markdown=MarkdownParser.parse(string)
@@ -96,6 +99,13 @@ class MarkdownBuilder(context: Context) {
                         }
                         is Element.InlineCode->{
                             inSpans(InlineCodeSpan(colorOnSurface,colorSurface,cornerRadius,gap)){
+                                append(element.text)
+                            }
+                        }
+                        is Element.Link->{
+                            inSpans(IconLinkSpan(linkIcon,colorSecondary,gap,colorPrimary,strikeWidth),
+                                    URLSpan(element.link)
+                            ){
                                 append(element.text)
                             }
                         }

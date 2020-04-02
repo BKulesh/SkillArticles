@@ -309,15 +309,31 @@ class ExampleInstrumentedTest1 {
         val size=span.getSize(paint,text,0,text.length,fm)
         assertEquals((2*padding+measureText).toInt(),size)
 
-        val inOrder=inOrder(paint,canvas)
+        verify(linkDrawble).setBounds(0,0,fm.descent-fm.ascent,fm.descent-fm.ascent)
+        verify(linkDrawble).setTint(iconColor)
 
-        inOrder.verify(paint).color=bgColor
-        inOrder.verify(canvas).drawRoundRect(RectF(0f,ltop.toFloat(),measureText+2*padding,lbottom.toFloat()),cornerRadius,cornerRadius,paint)
+        span.draw(canvas,text,0,text.length,cml.toFloat(),ltop,lbase,lbottom,paint)
+
+        val inOrder= inOrder(paint,canvas,path,linkDrawble)
+
+        verify(paint,atLeastOnce()).pathEffect=any()
+        verify(paint,atLeastOnce()).strokeWidth=0f
+        inOrder.verify(paint).color=textColor
+
+        verify(path).reset()
+        verify(path).moveTo(cml+span.iconSize+padding,lbottom.toFloat())
+        verify(path).lineTo(cml+span.iconSize+padding+span.textWidth,lbottom.toFloat())
+
+        inOrder.verify(canvas).drawPath(path,paint)
+
+        inOrder.verify(canvas).save()
+        inOrder.verify(canvas).translate(cml.toFloat(),(lbottom-linkDrawble.bounds.bottom).toFloat())
+        inOrder.verify(linkDrawble).draw(canvas)
+        inOrder.verify(canvas).restore()
 
         inOrder.verify(paint).color=textColor
-        inOrder.verify(canvas).drawText(text,0,text.length,cml+padding,lbase.toFloat(),paint)
+        inOrder.verify(canvas).drawText(text,0,text.length,cml+span.iconSize+padding,lbase.toFloat(),paint)
         inOrder.verify(paint).color=defaultColor
-
 
     }
 

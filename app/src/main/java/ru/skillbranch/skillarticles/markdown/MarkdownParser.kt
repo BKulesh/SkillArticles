@@ -27,7 +27,7 @@ object MarkdownParser {
         return MarkdownText(elements)
     }
 
-    fun clear(string: String) : String?{
+    fun clear(string: String?) : String?{
         return null
     }
 
