@@ -1,11 +1,15 @@
 package ru.skillbranch.skillarticles.extensions
 
 import android.content.Context
+import android.content.res.Resources
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.util.TypedValue
+import androidx.annotation.AttrRes
 import ru.skillbranch.skillarticles.ui.delegates.AttrValue
+import kotlin.properties.ReadOnlyProperty
+import kotlin.reflect.KProperty
 
 fun Context.dpToPx(dp: Int): Float {
     return TypedValue.applyDimension(
@@ -24,9 +28,34 @@ fun Context.dpToIntPx(dp: Int): Int {
     ).toInt()
 }
 
-fun Context.attrValue (value: Int): Int
+/*class AttrValue(@AttrRes private val res: Int):ReadOnlyProperty<Context,Int>{
+    private var value:Int?=null
+    override fun getValue(thisRef: Context, property: KProperty<*>): Int {
+        if (value==null) {
+            val tv=TypedValue()
+            if (thisRef.theme.resolveAttribute(res,tv,true)) value=tv.data
+            else throw Resources.NotFoundException("Resource with id $res not found.")
+        }
+        return value!!
+    }
+
+}
+*/
+//val Context.AttrValue: AttrValue
+
+//fun Context.AttrValue(ncolor: Int): ReadOnlyProperty<String,Int> {
+//     var value:Int?=null
+//        return value!!
+//    }
+//}
+
+
+fun Context.attrValue (res: Int): Int
 {
-    //val attr_value by AttrValue(value)
+    var value:Int=0
+    val tv=TypedValue()
+    if (theme.resolveAttribute(res,tv,true)) value=tv.data
+    else throw Resources.NotFoundException("Resource with id $res not found.")
     return value
 }
 

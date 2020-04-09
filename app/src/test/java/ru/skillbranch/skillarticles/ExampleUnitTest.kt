@@ -171,7 +171,7 @@ class ExampleUnitTest {
         assertEquals(expectedMarkdown["quote"], actualQuotes)
         assertEquals(expectedMarkdown["italic"], actualItalic)
         assertEquals(expectedMarkdown["bold"], actualBold)
-        //assertEquals(expectedMarkdown["strike"], actualStrike)
+        assertEquals(expectedMarkdown["strike"], actualStrike)
         assertEquals(3, actualRule.size)
         assertEquals(expectedMarkdown["inline"], actualInline)
         assertEquals(expectedMarkdown["linkTitles"], actualLinkTitles)

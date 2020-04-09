@@ -24,7 +24,7 @@ class MarkdownBuilder(context: Context) {
     private val quoteWidth=context.dpToPx(4)
     private val colorSecondary=context.attrValue(R.attr.colorSecondary)
     private val colorPrimary=context.attrValue(R.attr.colorPrimary)
-    private val colorDevider=context.attrValue(R.color.color_divider)
+    private val colorDevider=context.getColor(R.color.color_divider)
     private val headerMarginTop=context.dpToPx(12)
     private val haderMrginBottom=context.dpToPx(8)
     private val ruleWidth=context.dpToPx(2)
