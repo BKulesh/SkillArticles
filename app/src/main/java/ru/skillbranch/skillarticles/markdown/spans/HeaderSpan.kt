@@ -14,7 +14,7 @@ import androidx.annotation.Px
 import androidx.annotation.VisibleForTesting
 
 
-class HeadersSpan constructor(
+class HeaderSpan constructor(
     @IntRange(from = 1, to = 6)
     private val level: Int,
     @ColorInt

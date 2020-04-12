@@ -19,6 +19,7 @@ import androidx.appcompat.widget.SearchView
 //import android.widget.Toolbar
 import androidx.appcompat.widget.Toolbar
 import androidx.core.text.getSpans
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_root.*
@@ -87,6 +88,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
     override fun renderSearchResult(searchResult: List<Pair<Int, Int>>) {
         Log.e("Debug","renderSearchResult before")
         val content=tv_text_content.text as Spannable
+        tv_text_content.isVisible
         Log.e("Debug","renderSearchResult after")
         clearSearchResult()
         //val bgColor= Color.RED

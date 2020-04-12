@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Typeface
 import android.text.SpannableStringBuilder
 import android.text.SpannedString
+import android.text.style.StrikethroughSpan
 import android.text.style.StyleSpan
 import android.text.style.URLSpan
 import android.util.Log
@@ -37,24 +38,25 @@ class MarkdownBuilder(context: Context) {
 
     fun markdownToSpan(string: String): SpannedString {
         val markdown=MarkdownParser.parse(string)
-        Log.e("Debug","Builder Action buildElement BEFORE")
+        //Log.e("Debug","Builder Action buildElement BEFORE")
         return buildSpannedString{
             markdown.elements.forEach{buildElement(it,this)
-            Log.e("Debug","Builder Action buildElement="+it.text)
+            //Log.e("Debug","Builder Action buildElement="+it.text)
             }
         }
         }
 
         private fun buildElement(element: Element,builder: SpannableStringBuilder):CharSequence{
                 return builder.apply {
-                    Log.e("Debug","buildElement apply")
+                    //Log.e("Debug","buildElement apply")
                     when(element){
                         is Element.Text->{append(element.text)
-                            Log.e("Debug","append element text")}
+                            //Log.e("Debug","append element text")
+                             }
                         is Element.UnorderedListItem->{
-                            Log.e("Debug","append element UnorderedListItem ${element.text}")
+                            //Log.e("Debug","append element UnorderedListItem ${element.text}")
                             inSpans(UnorderedListSpan(gap,bulletRadius,colorSecondary)){
-                                Log.e("Debug","inSpans action ha")
+                                //Log.e("Debug","inSpans action ha")
                                 for (child in element.elements){
                                     buildElement(child,builder)
                                 }
@@ -71,7 +73,7 @@ class MarkdownBuilder(context: Context) {
                             }
                         }
                         is Element.Header->{
-                            inSpans(HeadersSpan(element.level,colorPrimary,colorDevider,headerMarginTop,haderMrginBottom)){
+                            inSpans(HeaderSpan(element.level,colorPrimary,colorDevider,headerMarginTop,haderMrginBottom)){
                                 append(element.text)
                             }
                         }
@@ -87,7 +89,7 @@ class MarkdownBuilder(context: Context) {
                             }
                         }
                         }
-                        is Element.Strike-> { inSpans()                            {
+                        is Element.Strike-> { inSpans(StrikethroughSpan())                            {
                             for (child in element.elements){
                                 buildElement(child,builder)
                             }
@@ -107,6 +109,12 @@ class MarkdownBuilder(context: Context) {
                                     URLSpan(element.link)
                             ){
                                 append(element.text)
+                            }
+                        }
+                        is Element.BlockCode->{
+                            inSpans(BlockCodeSpan(colorOnSurface,colorSurface,cornerRadius,gap,element.type)
+                            ){
+                              append(element.text)
                             }
                         }
                         else  -> {append(element.text)

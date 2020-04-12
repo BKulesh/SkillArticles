@@ -151,7 +151,7 @@ class ArticleViewModel(private val articleId: String): BaseViewModel<ArticleStat
 
     fun handleSearch(query: String?){
         query ?: return
-        Log.e("Debug","handleSearch currentState.content="+currentState.content)
+        //Log.e("Debug","handleSearch currentState.content="+currentState.content)
         if (clearContent==null) clearContent=MarkdownParser.clear(currentState.content!!)
         //Log.e("Debug","handleSearch currentState.content="+currentState.content)
         //if (currentState.content.isNullOrEmpty()) Log.e("Debug","handleSearch currentState.content=null")
@@ -159,9 +159,9 @@ class ArticleViewModel(private val articleId: String): BaseViewModel<ArticleStat
         val result=clearContent
             .indexesOf(query)
             .map{it to it + query.length}
-        Log.e("Debug","before handleSearch")
+        //Log.e("Debug","before handleSearch")
         //result.forEach { Log.e("Debug"," handleSearch massive "+it.toString()) }
-        Log.e("Debug","after handleSearch")
+        //Log.e("Debug","after handleSearch")
         updateState { it.copy(searchQuery= query,searchResults = result,searchPosition = 0) }
         //updateState { it.copy(searchQuery= query) }
 

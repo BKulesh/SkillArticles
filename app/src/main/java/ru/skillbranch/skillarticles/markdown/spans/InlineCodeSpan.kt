@@ -50,7 +50,7 @@ class InlineCodeSpan(
         paint: Paint
     ) {
         paint.forBackground {
-            rect.set(x,top.toFloat(),x+measureWidth,bottom.toFloat())
+            rect.set(x,top.toFloat(),x+measureWidth*2,bottom.toFloat())
             canvas.drawRoundRect(rect,cornerRadius,cornerRadius,paint)
         }
 

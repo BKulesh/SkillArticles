@@ -180,3 +180,13 @@ simple text and break line
 
 end markdown text
 """.trimIndent()
+
+
+val longText1: String = """
+
+For inline link use `[for title]` and `(for link)` 
+example link: [I'm an inline-style link](https://www.google.com)
+simple text and break line
+
+end markdown text
+""".trimIndent()
