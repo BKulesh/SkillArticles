@@ -34,13 +34,13 @@ class OrderedListSpan(
 
         //val orderText=order+".lt="+lineTop.toString()+".lbl="+lineBaseline.toString()+
         //".lb="+lineBottom.toString()+".ls="+lineStart.toString()+".le="+lineEnd.toString()
-        val orderText=order+"."
+        //val orderText=order+"."
         if (isFirstLine) {
             paint.withCustomColor {
                 canvas.drawText(
-                    orderText.toString(),
+                    order.toString(),
                     0,
-                    orderText.toString().length,
+                    order.toString().length,
                     gapWidth,
                     lineBaseline.toFloat(),
                     paint

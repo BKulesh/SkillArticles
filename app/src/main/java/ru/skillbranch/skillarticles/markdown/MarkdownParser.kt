@@ -147,7 +147,7 @@ object MarkdownParser {
                     text=string.subSequence(startIndex.plus(order.length+1),endIndex)
                     Log.e("Debug","copy_string "+10.toString()+" text="+text+", order="+order)
                     //Log.e("Debug","copy_string "+10.toString()+" text="+text)
-                    val element=Element.OrderedListItem(order=order,text=text)
+                    val element=Element.OrderedListItem(order=order+".",text=text)
                     parents.add(element)
                     lastStartIndex=endIndex
                 }
