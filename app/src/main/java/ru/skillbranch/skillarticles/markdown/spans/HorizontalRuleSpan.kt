@@ -36,7 +36,15 @@ class HorizontalRuleSpan(
         bottom: Int,
         paint: Paint
     ) {
-        canvas.drawLine(0f,(top+bottom)/2f,canvas.width.toFloat(),(top+bottom)/2f,paint)
+        paint.forLine {
+            canvas.drawLine(
+                0f,
+                (top + bottom) / 2f,
+                canvas.width.toFloat(),
+                (top + bottom) / 2f,
+                paint
+            )
+        }
     }
 
 

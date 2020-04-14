@@ -144,7 +144,7 @@ object MarkdownParser {
                 10->{
                     val reg="^[\\d]*\\.".toRegex().find(string.subSequence(startIndex,endIndex))
                     val order=reg!!.value.subSequence(0,reg!!.value.length-1).toString()
-                    text=string.subSequence(startIndex.plus(order.length+1),endIndex)
+                    text=string.subSequence(startIndex.plus(order.length+1),endIndex).trim()
                     Log.e("Debug","copy_string "+10.toString()+" text="+text+", order="+order)
                     //Log.e("Debug","copy_string "+10.toString()+" text="+text)
                     val element=Element.OrderedListItem(order=order+".",text=text)
@@ -341,7 +341,7 @@ object MarkdownParser {
             i=0;
             text="";
             while (i<link.length+4) {text="\t"+text;i++}
-            Log.e("Debug","copy_string"+9.toString()+" sb="+string.subSequence(startIndex,endIndex).toString()+" --> "+text)
+            Log.e("Debug","copy_string"+9.toString()+" sb="+string.subSequence(startIndex,endIndex).toString()+"-->"+text)
             copy_string=copy_string.replaceRange(startIndex,endIndex,text+title)
             lastStartIndex=endIndex
         }
@@ -354,7 +354,7 @@ object MarkdownParser {
             endIndex = matcher.end()
             val reg="^[\\d]*\\.".toRegex().find(copy_string.subSequence(startIndex,endIndex))
             val order=reg!!.value.subSequence(0,reg!!.value.length-1).toString()
-            text='\t'+copy_string.subSequence(startIndex.plus(order.length+1),endIndex).toString()
+            text="\t\t"+copy_string.subSequence(startIndex.plus(order.length+2),endIndex).toString()
             //text=copy_string.subSequence(startIndex.plus(3),endIndex.minus(3)).toString()
 
             i=0
