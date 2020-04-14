@@ -148,6 +148,7 @@ object MarkdownParser {
                     Log.e("Debug","copy_string "+10.toString()+" text="+text+", order="+order)
                     //Log.e("Debug","copy_string "+10.toString()+" text="+text)
                     val element=Element.OrderedListItem(order=order,text=text)
+                    parents.add(element)
                     lastStartIndex=endIndex
                 }
                 11->{
@@ -161,15 +162,18 @@ object MarkdownParser {
 
                     for (index in rows.indices){
                         var bt=Element.BlockCode.Type.SINGLE
+                        text=rows[index]
                         if (rows.count()>1){
                         when (index) {
-                                0 -> bt = Element.BlockCode.Type.START
+                                0 -> {bt = Element.BlockCode.Type.START
+                                    text=text+"\n"}
                                 rows.count() - 1 -> bt = Element.BlockCode.Type.END
-                                else -> bt = Element.BlockCode.Type.MIDDLE
+                                else -> {bt = Element.BlockCode.Type.MIDDLE
+                                    text=text+"\n"}
                             }
                         }
-                        Log.e("Debug","copy_string "+11.toString()+"circle  item="+rows[index]+",index="+index.toString()+",type"+bt.toString())
-                        val element=Element.BlockCode(text=rows[index],type= bt)
+                        Log.e("Debug","copy_string "+11.toString()+"circle item="+text+",index="+index.toString()+",type"+bt.toString()+",length="+text.length.toString())
+                        val element=Element.BlockCode(text=text,type= bt)
                         parents.add(element)
                     }
 
@@ -342,9 +346,43 @@ object MarkdownParser {
             lastStartIndex=endIndex
         }
 
+        clrPattern =Pattern.compile(ORDERED_LIST_ITEM_GROUP,Pattern.MULTILINE)
+        matcher = clrPattern.matcher(copy_string)
+        lastStartIndex=0
+        loop@ while (matcher.find(lastStartIndex)) {
+            startIndex = matcher.start()
+            endIndex = matcher.end()
+            val reg="^[\\d]*\\.".toRegex().find(copy_string.subSequence(startIndex,endIndex))
+            val order=reg!!.value.subSequence(0,reg!!.value.length-1).toString()
+            text='\t'+copy_string.subSequence(startIndex.plus(order.length+1),endIndex).toString()
+            //text=copy_string.subSequence(startIndex.plus(3),endIndex.minus(3)).toString()
+
+            i=0
+            while (i<order.length) {text="\t"+text;i++}
+
+            Log.e("Debug","copy_string"+10.toString()+" sb="+string.subSequence(startIndex,endIndex).toString()+" --> "+text)
+            copy_string=copy_string.replaceRange(startIndex,endIndex,text)
+            lastStartIndex=endIndex
+        }
+
+        clrPattern =Pattern.compile(MULTILINE_WRAP_BLOCK_CODE_GROUP,Pattern.MULTILINE)
+        Log.e("Debug","copy_string"+11.toString()+" matcher="+copy_string)
+        matcher = clrPattern.matcher(copy_string)
+        lastStartIndex=0
+        loop@ while (matcher.find(lastStartIndex)) {
+            startIndex = matcher.start()
+            endIndex = matcher.end()
+            text=copy_string.subSequence(startIndex.plus(3),endIndex.minus(3)).toString()
+            Log.e("Debug","copy_string"+11.toString()+" sb="+copy_string.subSequence(startIndex,endIndex).toString()+" --> "+text)
+            //copy_string=copy_string.replaceRange(startIndex,endIndex,"\t\t\t"+text+"\t\t\t")
+            copy_string=copy_string.replaceRange(startIndex,endIndex,"\t\t\t"+text+"\t\t\t")
+            lastStartIndex=endIndex
+        }
+
+
         copy_string=copy_string.replace("\t","",false)
 
-        Log.e("Debug","copy_string="+copy_string)
+        Log.e("Debug","copy_string clear="+copy_string)
         return copy_string
     }
 
