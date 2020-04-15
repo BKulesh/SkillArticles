@@ -23,7 +23,7 @@ class OrderedListSpan(
     override fun getLeadingMargin(first: Boolean): Int {
         //TODO implement me()
 
-        return 30+gapWidth.toInt()
+        return order.length.inc()*gapWidth.toInt()
     }
 
     override fun drawLeadingMargin(
@@ -41,7 +41,7 @@ class OrderedListSpan(
                     order.toString(),
                     0,
                     order.toString().length,
-                    gapWidth,
+                    currentMarginLocation+gapWidth,
                     lineBaseline.toFloat(),
                     paint
                 )

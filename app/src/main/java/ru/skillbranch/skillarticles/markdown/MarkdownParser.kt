@@ -17,12 +17,14 @@ object MarkdownParser {
     private const val LINK_GROUP = "(\\[[^\\[\\]]*?]\\(.+?\\)|^\\[*?]\\(.*?\\))"
     private const val WRAP_BLOCK_CODE_GROUP = "(^[\\`]{3}.*[\\`]{3}\$)"
     //private const val MULTILINE_WRAP_BLOCK_CODE_GROUP = "(^[\\`]{3}[\\s,\\S]*[\\`]{3}\$)"
-    private const val MULTILINE_WRAP_BLOCK_CODE_GROUP = "(^[\\`]{3}[^\\`]*[\\`]{3}\$)"
-    private const val ORDERED_LIST_ITEM_GROUP = "(^[\\d]*\\..*\$)"
+    //private const val MULTILINE_WRAP_BLOCK_CODE_GROUP = "(^[\\`]{3}[^\\`]*[\\`]{3}\$)"
+    private const val BLOCK_CODE_GROUP = "(^[`]{3}[\\s\\S]+?[\\`]{3}\$)"
+    //private const val ORDERED_LIST_ITEM_GROUP = "(^[\\d]*\\..*\$)"
+    private const val ORDER_LIST_GROUP = "(^\\d{1,2}\\.\\s.+?$)"
 
 
 
-    private const val MARKDOWN_GROUPS="$UNORDERED_LIST_ITEM_GROUP|$HEADER_GROUP|$QUOTE_GROUP|$ITALIC_GROUP|$BOLD_GROUP|$STRIKE_GROUP|$RULE_GROUP|$INLINE_GROUP|$LINK_GROUP|$ORDERED_LIST_ITEM_GROUP|$MULTILINE_WRAP_BLOCK_CODE_GROUP"
+    private const val MARKDOWN_GROUPS="$UNORDERED_LIST_ITEM_GROUP|$HEADER_GROUP|$QUOTE_GROUP|$ITALIC_GROUP|$BOLD_GROUP|$STRIKE_GROUP|$RULE_GROUP|$INLINE_GROUP|$LINK_GROUP|$ORDER_LIST_GROUP|$BLOCK_CODE_GROUP"
 
     private val elementsPatten by lazy{Pattern.compile(MARKDOWN_GROUPS,Pattern.MULTILINE)}
 
@@ -142,12 +144,14 @@ object MarkdownParser {
 
                 }
                 10->{
-                    val reg="^[\\d]*\\.".toRegex().find(string.subSequence(startIndex,endIndex))
+                    //val reg="^[\\d]*\\.".toRegex().find(string.subSequence(startIndex,endIndex))
+                    val reg="^\\d{1,2}\\.".toRegex().find(string.subSequence(startIndex,endIndex))
                     val order=reg!!.value.subSequence(0,reg!!.value.length-1).toString()
-                    text=string.subSequence(startIndex.plus(order.length+1),endIndex).trim()
+                    text=string.subSequence(startIndex.plus(order.length+2),endIndex)
                     Log.e("Debug","copy_string "+10.toString()+" text="+text+", order="+order)
                     //Log.e("Debug","copy_string "+10.toString()+" text="+text)
-                    val element=Element.OrderedListItem(order=order+".",text=text)
+                    val subs= findElements(text)
+                    val element=Element.OrderedListItem(order=order+".",text=text,elements=subs)
                     parents.add(element)
                     lastStartIndex=endIndex
                 }
@@ -346,13 +350,14 @@ object MarkdownParser {
             lastStartIndex=endIndex
         }
 
-        clrPattern =Pattern.compile(ORDERED_LIST_ITEM_GROUP,Pattern.MULTILINE)
+        clrPattern =Pattern.compile(ORDER_LIST_GROUP,Pattern.MULTILINE)
         matcher = clrPattern.matcher(copy_string)
         lastStartIndex=0
         loop@ while (matcher.find(lastStartIndex)) {
             startIndex = matcher.start()
             endIndex = matcher.end()
-            val reg="^[\\d]*\\.".toRegex().find(copy_string.subSequence(startIndex,endIndex))
+            //val reg="^[\\d]*\\.".toRegex().find(copy_string.subSequence(startIndex,endIndex))
+            val reg="^\\d{1,2}\\.".toRegex().find(string.subSequence(startIndex,endIndex))
             val order=reg!!.value.subSequence(0,reg!!.value.length-1).toString()
             text="\t\t"+copy_string.subSequence(startIndex.plus(order.length+2),endIndex).toString()
             //text=copy_string.subSequence(startIndex.plus(3),endIndex.minus(3)).toString()
@@ -360,12 +365,12 @@ object MarkdownParser {
             i=0
             while (i<order.length) {text="\t"+text;i++}
 
-            Log.e("Debug","copy_string"+10.toString()+" sb="+string.subSequence(startIndex,endIndex).toString()+" --> "+text)
+            Log.e("Debug","copy_string"+10.toString()+" sb="+string.subSequence(startIndex,endIndex).toString()+"-->"+text)
             copy_string=copy_string.replaceRange(startIndex,endIndex,text)
             lastStartIndex=endIndex
         }
 
-        clrPattern =Pattern.compile(MULTILINE_WRAP_BLOCK_CODE_GROUP,Pattern.MULTILINE)
+        clrPattern =Pattern.compile(BLOCK_CODE_GROUP,Pattern.MULTILINE)
         Log.e("Debug","copy_string"+11.toString()+" matcher="+copy_string)
         matcher = clrPattern.matcher(copy_string)
         lastStartIndex=0

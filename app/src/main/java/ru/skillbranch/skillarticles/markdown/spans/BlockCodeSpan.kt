@@ -105,7 +105,7 @@ class BlockCodeSpan(
             val measureText=paint.measureText(text.toString(),start,end)
             //measureWidth=((measureText+2*padding)*6).toInt()
             if (fm!=null) measureRadius=((fm.bottom-fm.top.toInt())/2).toFloat()
-                     else measureRadius=100f
+                     else measureRadius=0f
             Log.e("Debug","BlockCodeSpan measureRadius="+measureRadius.toString())
         }
         return 0///measureWidth
