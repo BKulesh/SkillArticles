@@ -2,6 +2,7 @@ package ru.skillbranch.skillarticles.markdown.spans
 
 import android.R.attr.radius
 import android.graphics.*
+import android.sax.StartElementListener
 import android.text.style.ReplacementSpan
 import android.util.Log
 import androidx.annotation.ColorInt
@@ -42,51 +43,74 @@ class BlockCodeSpan(
         bottom: Int,
         paint: Paint
     ) {
-        //rect.set(x, top.toFloat(), x + measureWidth, bottom.toFloat())
-        rect.set(x, top.toFloat(), canvas.width.toFloat(), bottom.toFloat())
 
-        /*val oval = RectF(x , y.toFloat() , x + measureRadius*2,y.toFloat()+measureRadius*2)
-        path.addArc(oval, 0f, 1f)
-        canvas.drawArc(oval, 180f, 90f,true,paint)*/
 
         paint.forBackground {
             when (type) {
                 Element.BlockCode.Type.SINGLE->{
-                    //canvas.drawRoundRect(rect,cornerRadius,cornerRadius,paint)
+                    rect.set(x, top.toFloat()+padding, canvas.width.toFloat(), bottom.toFloat()-padding)
                     canvas.drawRoundRect(rect,cornerRadius,cornerRadius,paint)
                 }
                 Element.BlockCode.Type.MIDDLE->{
+                    rect.set(x, top.toFloat(), canvas.width.toFloat(), bottom.toFloat())
                     canvas.drawRect(rect,paint)
                 }
                 Element.BlockCode.Type.START->{
-                    //val measureHeight=canvas.width
-                    //path.moveTo(x,y.toFloat())
 
-                    //val oval = RectF(x - radius, y.toFloat() - radius, x + radius,y.toFloat()+measureRadius)
-                    //path.addArc(oval, 0f, 1f)
-
-                    canvas.drawRoundRect(rect,cornerRadius,cornerRadius,paint)
+                    /*canvas.drawRoundRect(rect,cornerRadius,cornerRadius,paint)
                     rect.set(x, bottom.toFloat()-cornerRadius, x+cornerRadius, bottom.toFloat())
                     canvas.drawRect(rect,paint)
                     rect.set(canvas.width.toFloat()-cornerRadius, bottom.toFloat()-cornerRadius, canvas.width.toFloat(), bottom.toFloat())
-                    canvas.drawRect(rect,paint)
+                    canvas.drawRect(rect,paint)*/
+                    val corners=floatArrayOf(
+                        cornerRadius,cornerRadius,
+                        cornerRadius,cornerRadius,
+                        0f,0f,
+                        0f,0f
+                    )
+                    rect.set(0f,top+padding,canvas.width.toFloat(),bottom.toFloat())
+                    path.reset()
+                    path.addRoundRect(rect,corners,Path.Direction.CW)
+                    canvas.drawPath(path,paint)
                 }
                 Element.BlockCode.Type.END->{
-                    canvas.drawRoundRect(rect,cornerRadius,cornerRadius,paint)
+                    /*canvas.drawRoundRect(rect,cornerRadius,cornerRadius,paint)
                     rect.set(x, top.toFloat(), x+cornerRadius, top.toFloat()+cornerRadius)
                     canvas.drawRect(rect,paint)
                     rect.set(canvas.width.toFloat()-cornerRadius, top.toFloat(), canvas.width.toFloat(), top.toFloat()+cornerRadius)
-                    canvas.drawRect(rect,paint)
+                    canvas.drawRect(rect,paint)*/
+                    val corners=floatArrayOf(
+                        0f,0f,
+                        0f,0f,
+                        cornerRadius,cornerRadius,
+                        cornerRadius,cornerRadius
+                    )
+                    rect.set(0f,top.toFloat(),canvas.width.toFloat(),bottom.toFloat()-padding)
+                    path.reset()
+                    path.addRoundRect(rect,corners,Path.Direction.CW)
+                    canvas.drawPath(path,paint)
+
                 }
-            //canvas.drawRect(rect,paint)
             }
-            //canvas.drawRect(rect,paint)
 
         }
 
         paint.forText {
-            canvas.drawText(text.toString(),start,end,x+padding,y.toFloat(),paint)
-            //canvas.drawText(":"+measureRadius.toString(),start,end,x+padding,y.toFloat(),paint)
+            when (type) {
+                Element.BlockCode.Type.MIDDLE-> {
+                    canvas.drawText(text.toString(),start,end,x+padding,y.toFloat(),paint)
+                }
+                Element.BlockCode.Type.SINGLE-> {
+                    canvas.drawText(text.toString(),start,end,x+padding,y.toFloat(),paint)
+                }
+                Element.BlockCode.Type.START-> {
+                    canvas.drawText(text.toString(),start,end,x+padding,y.toFloat(),paint)
+                }
+                Element.BlockCode.Type.END-> {
+                    canvas.drawText(text.toString(),start,end,x+padding,y.toFloat(),paint)
+                }
+            }
+
         }
 
     }
@@ -100,35 +124,56 @@ class BlockCodeSpan(
         end: Int,
         fm: Paint.FontMetricsInt?
     ): Int {
-
-        paint.forText {
+        if (fm!=null) {
+            when (type) {
+                Element.BlockCode.Type.START -> {
+                    fm.ascent = (paint.ascent() - 2 * padding).toInt()
+                    fm.descent = paint.descent().toInt()
+                }
+                Element.BlockCode.Type.END -> {
+                    fm.descent = (paint.descent() + 2 * padding).toInt()
+                    fm.ascent = paint.ascent().toInt()
+                }
+                Element.BlockCode.Type.MIDDLE -> {
+                    fm.descent = paint.descent().toInt()
+                    fm.ascent = paint.ascent().toInt()
+                }
+                Element.BlockCode.Type.SINGLE -> {
+                    fm.ascent = (paint.ascent() - 2 * padding).toInt()
+                    fm.descent = (paint.descent() + 2 * padding).toInt()
+                }
+            }
+            fm.top=fm.ascent
+            fm.bottom=fm.descent
+        }
+/*        paint.forText {
             val measureText=paint.measureText(text.toString(),start,end)
             //measureWidth=((measureText+2*padding)*6).toInt()
             if (fm!=null) measureRadius=((fm.bottom-fm.top.toInt())/2).toFloat()
                      else measureRadius=0f
             Log.e("Debug","BlockCodeSpan measureRadius="+measureRadius.toString())
-        }
+        }*/
         return 0///measureWidth
     }
 
     private inline fun Paint.forText(block: () -> Unit) {
         val oldSize=textSize
         val oldStyle=typeface?.style?:0
-        val oldFont=typeface
+        val oldTypeFace=typeface
         val oldColor=color
 
         color=textColor
         typeface= Typeface.create(Typeface.MONOSPACE,oldStyle)
         textSize*=0.85f
 
-        style=Paint.Style.STROKE
-        typeface=Typeface.create(Typeface.MONOSPACE,oldStyle)
-        strokeWidth=0f
+        //style=Paint.Style.STROKE
+        //typeface=Typeface.create(Typeface.MONOSPACE,oldStyle)
+        //strokeWidth=0f
 
         block()
 
         textSize=oldSize
-        typeface=oldFont
+        typeface=oldTypeFace
         color=oldColor
     }
 
