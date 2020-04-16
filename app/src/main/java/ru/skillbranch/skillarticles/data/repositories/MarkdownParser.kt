@@ -1,4 +1,4 @@
-package ru.skillbranch.skillarticles.markdown
+package ru.skillbranch.skillarticles.data.repositories
 
 import android.util.Log
 import java.util.regex.Pattern
@@ -28,13 +28,19 @@ object MarkdownParser {
 
     private val elementsPatten by lazy{Pattern.compile(MARKDOWN_GROUPS,Pattern.MULTILINE)}
 
-    fun parse(string: String): MarkdownText{
+    fun parse(string: String): MarkdownText {
         val elements= mutableListOf<Element>()
         //val cs1= clear(string)
         //val cs: CharSequence=cs1!!.subSequence(0,cs1!!.length)
         //elements.addAll(findElements(cs))
-        elements.addAll(findElements(string))
-        return MarkdownText(elements)
+        elements.addAll(
+            findElements(
+                string
+            )
+        )
+        return MarkdownText(
+            elements
+        )
     }
 
 
@@ -50,7 +56,11 @@ object MarkdownParser {
             val endIndex=matcher.end()
 
             if(lastStartIndex < startIndex){
-                parents.add(Element.Text(string.subSequence(lastStartIndex,startIndex)))
+                parents.add(
+                    Element.Text(
+                        string.subSequence(lastStartIndex, startIndex)
+                    )
+                )
             }
 
             var text: CharSequence
@@ -71,8 +81,15 @@ object MarkdownParser {
                 1->{
                     text=string.subSequence(startIndex.plus(2),endIndex)
 
-                    val subs= findElements(text)
-                    val element=Element.UnorderedListItem(text,subs)
+                    val subs=
+                        findElements(
+                            text
+                        )
+                    val element=
+                        Element.UnorderedListItem(
+                            text,
+                            subs
+                        )
                     //Log.e("Debug"," parse_UnorderedListItem $text ")
                     parents.add(element)
 
@@ -82,7 +99,11 @@ object MarkdownParser {
                     val reg="^#{1,6}".toRegex().find(string.subSequence(startIndex,endIndex))
                     val level=reg!!.value.length
                     text=string.subSequence(startIndex.plus(level.inc()),endIndex)
-                    val element=Element.Header(level,text)
+                    val element=
+                        Element.Header(
+                            level,
+                            text
+                        )
                     //Log.e("Debug"," parse_Qoute $text ")
                     parents.add(element)
                     lastStartIndex=endIndex
@@ -91,46 +112,78 @@ object MarkdownParser {
                     //val reg="^>".toRegex().find(string.subSequence(startIndex,endIndex))
                     //val level=reg!!.value.length
                     text=string.subSequence(startIndex.plus(2),endIndex)
-                    val subelements=findElements(text)
+                    val subelements=
+                        findElements(
+                            text
+                        )
 
-                    val element=Element.Quote(text,subelements)
+                    val element=
+                        Element.Quote(
+                            text,
+                            subelements
+                        )
                     //Log.e("Debug"," parse_Qoute $text ")
                     parents.add(element)
                     lastStartIndex=endIndex
                 }
                 4->{
                     text=string.subSequence(startIndex.inc(),endIndex.dec())
-                    val subelements=findElements(text)
+                    val subelements=
+                        findElements(
+                            text
+                        )
 
-                    val element=Element.Italic(text,subelements)
+                    val element=
+                        Element.Italic(
+                            text,
+                            subelements
+                        )
                     parents.add(element)
                     lastStartIndex=endIndex
                 }
                 5->{
                     text=string.subSequence(startIndex.plus(2),endIndex.plus(-2))
-                    val subelements=findElements(text)
+                    val subelements=
+                        findElements(
+                            text
+                        )
 
-                    val element=Element.Bold(text,subelements)
+                    val element=
+                        Element.Bold(
+                            text,
+                            subelements
+                        )
                     parents.add(element)
                     lastStartIndex=endIndex
                 }
                 6->{
                     text=string.subSequence(startIndex.plus(2),endIndex.plus(-2))
-                    val subelements=findElements(text)
+                    val subelements=
+                        findElements(
+                            text
+                        )
 
-                    val element=Element.Strike(text,subelements)
+                    val element=
+                        Element.Strike(
+                            text,
+                            subelements
+                        )
                     parents.add(element)
                     lastStartIndex=endIndex
                 }
                 7->{
-                    val element=Element.Rule()
+                    val element=
+                        Element.Rule()
                     parents.add(element)
                     lastStartIndex=endIndex
                 }
                 8->{
                     text=string.subSequence(startIndex.inc(),endIndex.dec())
 
-                    val element=Element.InlineCode(text)
+                    val element=
+                        Element.InlineCode(
+                            text
+                        )
                     parents.add(element)
                     lastStartIndex=endIndex
 
@@ -138,7 +191,11 @@ object MarkdownParser {
                 9->{
                     text=string.subSequence(startIndex,endIndex)
                     val (title: String, link : String)="\\[(.*)]\\((.*)\\)".toRegex().find(text)!!.destructured
-                    val element=Element.Link(text=title,link=link)
+                    val element=
+                        Element.Link(
+                            text = title,
+                            link = link
+                        )
                     parents.add(element)
                     lastStartIndex=endIndex
 
@@ -150,8 +207,16 @@ object MarkdownParser {
                     text=string.subSequence(startIndex.plus(order.length+2),endIndex)
                     Log.e("Debug","copy_string "+10.toString()+" text="+text+", order="+order)
                     //Log.e("Debug","copy_string "+10.toString()+" text="+text)
-                    val subs= findElements(text)
-                    val element=Element.OrderedListItem(order=order+".",text=text,elements=subs)
+                    val subs=
+                        findElements(
+                            text
+                        )
+                    val element=
+                        Element.OrderedListItem(
+                            order = order + ".",
+                            text = text,
+                            elements = subs
+                        )
                     parents.add(element)
                     lastStartIndex=endIndex
                 }
@@ -165,19 +230,27 @@ object MarkdownParser {
                     val rows="(^.*\$)".toRegex(RegexOption.MULTILINE).findAll(text).map{it.value}.toList()
 
                     for (index in rows.indices){
-                        var bt=Element.BlockCode.Type.SINGLE
+                        var bt=
+                            Element.BlockCode.Type.SINGLE
                         text=rows[index]
                         if (rows.count()>1){
                         when (index) {
-                                0 -> {bt = Element.BlockCode.Type.START
+                                0 -> {bt =
+                                    Element.BlockCode.Type.START
                                     text=text+"\n"}
-                                rows.count() - 1 -> bt = Element.BlockCode.Type.END
-                                else -> {bt = Element.BlockCode.Type.MIDDLE
+                                rows.count() - 1 -> bt =
+                                    Element.BlockCode.Type.END
+                                else -> {bt =
+                                    Element.BlockCode.Type.MIDDLE
                                     text=text+"\n"}
                             }
                         }
                         Log.e("Debug","copy_string "+11.toString()+"circle item="+text+",index="+index.toString()+",type"+bt.toString()+",length="+text.length.toString())
-                        val element=Element.BlockCode(text=text,type= bt)
+                        val element=
+                            Element.BlockCode(
+                                text = text,
+                                type = bt
+                            )
                         parents.add(element)
                     }
 
@@ -194,7 +267,11 @@ object MarkdownParser {
 
         if (lastStartIndex < string.length) {
             val text=string.subSequence(lastStartIndex,string.length)
-            parents.add(Element.Text(text))
+            parents.add(
+                Element.Text(
+                    text
+                )
+            )
         }
 
         return parents
@@ -467,7 +544,10 @@ object MarkdownParser {
                 -1 -> break@loop
                 10->{
                     text=copy_string.subSequence(startIndex.plus(2),endIndex)
-                    text=clear(text.toString()).toString()
+                    text=
+                        clear(
+                            text.toString()
+                        ).toString()
                     copy_string=copy_string.replace(copy_string.subSequence(startIndex,endIndex).toString(),text.toString(),false)
                     //Log.e("Debug","copy_string"+group.toString()+"="+copy_string)
                     //Log.e("Debug","copy_string"+group.toString()+" text="+text)
@@ -488,7 +568,10 @@ object MarkdownParser {
                     val reg="^#{1,6}".toRegex().find(copy_string.subSequence(startIndex,endIndex))
                     val level=reg!!.value.length
                     text=copy_string.subSequence(startIndex.plus(level.inc()),endIndex)
-                    text=clear(text.toString()).toString()
+                    text=
+                        clear(
+                            text.toString()
+                        ).toString()
                     //Log.e("Debug","clear_header text"+group.toString()+"="+text)
                     //Log.e("Debug","clear_header subsequence"+group.toString()+"="+string.subSequence(startIndex,endIndex))
                     copy_string=copy_string.replace(copy_string.subSequence(startIndex,endIndex).toString(),text.toString(),false)
@@ -509,7 +592,10 @@ object MarkdownParser {
                     text=string.subSequence(startIndex.plus(2),endIndex)
                     //Log.e("Debug","copy_string"+group.toString()+" subSequence="+string.subSequence(startIndex,endIndex))
                     //Log.e("Debug","copy_string"+group.toString()+" text="+text)
-                    text=clear(text.toString()).toString()
+                    text=
+                        clear(
+                            text.toString()
+                        ).toString()
                     //Log.e("Debug","copy_string"+group.toString()+" next text="+text)
                     //Log.e("Debug","copy_string"+group.toString()+"="+copy_string)
                     //Log.e("Debug","copy_string"+group.toString()+" text="+text)
@@ -550,7 +636,10 @@ object MarkdownParser {
                     Log.e("Debug","copy_string"+group.toString()+" subSequence="+string.subSequence(startIndex,endIndex))
                     text=string.subSequence(startIndex.plus(2),endIndex.plus(-2))
                     Log.e("Debug","copy_string"+group.toString()+" text="+text)
-                    text=clear(text.toString()).toString()
+                    text=
+                        clear(
+                            text.toString()
+                        ).toString()
                     Log.e("Debug","copy_string"+group.toString()+"  2 text="+text)
                     copy_string.replace(string.subSequence(startIndex,endIndex).toString(),text.toString(),false)
                     //Log.e("Debug","copy_string"+group.toString()+" text="+text)
@@ -569,7 +658,10 @@ object MarkdownParser {
                 }
                 60->{
                     text=string.subSequence(startIndex.plus(2),endIndex.plus(-2))
-                    text=clear(text.toString()).toString()
+                    text=
+                        clear(
+                            text.toString()
+                        ).toString()
                     copy_string=copy_string.replace(string.subSequence(startIndex,endIndex).toString(),text.toString(),false)
                     //Log.e("Debug","copy_string"+group.toString()+" text="+text)
                     //text=clear(text.toString()).toString()

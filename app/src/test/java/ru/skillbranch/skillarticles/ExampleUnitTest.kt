@@ -1,12 +1,10 @@
 package ru.skillbranch.skillarticles
 
-import android.util.Log
 import org.junit.Test
 
 import org.junit.Assert.*
-import ru.skillbranch.skillarticles.extensions.indexesOf
-import ru.skillbranch.skillarticles.markdown.Element
-import ru.skillbranch.skillarticles.markdown.MarkdownParser
+import ru.skillbranch.skillarticles.data.repositories.Element
+import ru.skillbranch.skillarticles.data.repositories.MarkdownParser
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -16,7 +14,8 @@ import ru.skillbranch.skillarticles.markdown.MarkdownParser
 class ExampleUnitTest {
    @Test
    fun parse_list_item(){
-        val result=MarkdownParser.parse(unorderedListString)
+        val result=
+            MarkdownParser.parse(unorderedListString)
        val actual = prepare<Element.UnorderedListItem>(result.elements)
        assertEquals(expectedUnorderedList,actual)
 
@@ -29,7 +28,8 @@ class ExampleUnitTest {
 
     @Test
     fun parse_header(){
-        val result=MarkdownParser.parse(headerString)
+        val result=
+            MarkdownParser.parse(headerString)
         val actual = prepare<Element.Header>(result.elements)
         val actualLevels = result.elements.spread()
             .filterIsInstance<Element.Header>()
@@ -47,7 +47,8 @@ class ExampleUnitTest {
 
     @Test
     fun parse_quote(){
-        val result=MarkdownParser.parse(quoteString)
+        val result=
+            MarkdownParser.parse(quoteString)
         val actual = prepare<Element.Quote>(result.elements)
         assertEquals(expectedQuote,actual)
 
@@ -59,7 +60,8 @@ class ExampleUnitTest {
 
     @Test
     fun parse_italic(){
-        val result=MarkdownParser.parse(italicString)
+        val result=
+            MarkdownParser.parse(italicString)
         val actual = prepare<Element.Italic>(result.elements)
         assertEquals(expectedItalic,actual)
 
@@ -70,7 +72,8 @@ class ExampleUnitTest {
 
     @Test
     fun parse_bold(){
-        val result=MarkdownParser.parse(boldString)
+        val result=
+            MarkdownParser.parse(boldString)
         val actual = prepare<Element.Bold>(result.elements)
         assertEquals(expectedBold,actual)
 
@@ -81,7 +84,8 @@ class ExampleUnitTest {
 
     @Test
     fun parse_strike(){
-        val result=MarkdownParser.parse(strikeString)
+        val result=
+            MarkdownParser.parse(strikeString)
         val actual = prepare<Element.Strike>(result.elements)
         assertEquals(expectedStrike,actual)
 
@@ -93,7 +97,8 @@ class ExampleUnitTest {
 
     @Test
     fun parse_combine(){
-        val result=MarkdownParser.parse(combineEmphasisString)
+        val result=
+            MarkdownParser.parse(combineEmphasisString)
         val actualItalic = prepare<Element.Italic>(result.elements)
         val actualBold = prepare<Element.Bold>(result.elements)
         //val actualStrike = prepare<Element.Strike>(result.elements)
@@ -111,7 +116,8 @@ class ExampleUnitTest {
 
     @Test
     fun parse_rule(){
-        val result=MarkdownParser.parse(ruleString)
+        val result=
+            MarkdownParser.parse(ruleString)
         val actual = prepare<Element.Rule>(result.elements)
         assertEquals(3,actual.size)
 
@@ -123,7 +129,8 @@ class ExampleUnitTest {
 
     @Test
     fun parse_inline_code(){
-        val result=MarkdownParser.parse(inlineString)
+        val result=
+            MarkdownParser.parse(inlineString)
         val actual = prepare<Element.InlineCode>(result.elements)
         assertEquals(expectedInline,actual)
 
@@ -135,7 +142,8 @@ class ExampleUnitTest {
 
     @Test
     fun parse_link(){
-        val result=MarkdownParser.parse(linkString)
+        val result=
+            MarkdownParser.parse(linkString)
         val actual = prepare<Element.Link>(result.elements)
         val actualLink=result.elements.spread()
             .filterIsInstance<Element.Link>()
@@ -214,9 +222,9 @@ class ExampleUnitTest {
         return elements
     }
 
-    private inline fun<reified T:Element> prepare(list: List<Element>): List<String>{
+    private inline fun<reified T: Element> prepare(list: List<Element>): List<String>{
         return list
-            .fold(mutableListOf<Element>()){ acc,el -> acc.also{ it.addAll(el.spread()) }
+            .fold(mutableListOf<Element>()){ acc, el -> acc.also{ it.addAll(el.spread()) }
             }
             .filterIsInstance<T>()
             .map { it.text.toString() }

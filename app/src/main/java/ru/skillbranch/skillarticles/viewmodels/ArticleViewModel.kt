@@ -12,7 +12,7 @@ import ru.skillbranch.skillarticles.extensions.data.toAppSettings
 import ru.skillbranch.skillarticles.extensions.data.toArticlePersonalInfo
 import ru.skillbranch.skillarticles.extensions.format
 import ru.skillbranch.skillarticles.extensions.indexesOf
-import ru.skillbranch.skillarticles.markdown.MarkdownParser
+import ru.skillbranch.skillarticles.data.repositories.MarkdownParser
 import ru.skillbranch.skillarticles.viewmodels.base.BaseViewModel
 import ru.skillbranch.skillarticles.viewmodels.base.IViewModelState
 import ru.skillbranch.skillarticles.viewmodels.base.Notify
@@ -152,7 +152,8 @@ class ArticleViewModel(private val articleId: String): BaseViewModel<ArticleStat
     fun handleSearch(query: String?){
         query ?: return
         //Log.e("Debug","handleSearch currentState.content="+currentState.content)
-        if (clearContent==null) clearContent=MarkdownParser.clear(currentState.content!!)
+        if (clearContent==null) clearContent=
+            MarkdownParser.clear(currentState.content!!)
         //Log.e("Debug","handleSearch currentState.content="+currentState.content)
         //if (currentState.content.isNullOrEmpty()) Log.e("Debug","handleSearch currentState.content=null")
         Log.e("Debug","handleSearch clearContent="+clearContent)
