@@ -17,7 +17,6 @@ abstract class BaseActivity<T:BaseViewModel<out IViewModelState>> : AppCompatAct
 
     abstract fun setupViews()
     abstract fun renderNotification(notify: Notify)
-    internal inline fun<reified T:ViewModel> provideViewModel(arg : Any?) =ViewModelDelegate(T::class.java,arg)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,5 +39,10 @@ abstract class BaseActivity<T:BaseViewModel<out IViewModelState>> : AppCompatAct
         viewModel.restoreState(savedInstanceState)
         binding.restoreUI(savedInstanceState)
     }
+
+    internal inline fun<reified T:ViewModel> provideViewModel(arg : Any?) :ViewModelDelegate<T>{
+        return ViewModelDelegate(T::class.java,arg)
+    }
+
 
 }

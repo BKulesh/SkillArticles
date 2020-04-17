@@ -10,6 +10,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
 //import android.widget.Toolbar
@@ -37,42 +38,20 @@ import ru.skillbranch.skillarticles.viewmodels.base.IViewModelState
 import ru.skillbranch.skillarticles.viewmodels.base.Notify
 import ru.skillbranch.skillarticles.viewmodels.base.ViewModelFactory
 
-class RootActivity : BaseActivity<ArticleViewModel>(),
-    IArticleView {
-    //      constructor()
+class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
     override val layout: Int = R.layout.activity_root
-    override val viewModel: ArticleViewModel by lazy{
+    override val viewModel: ArticleViewModel by provideViewModel("0")
+    /*override val viewModel: ArticleViewModel by
+    lazy{
         val vmFactory=ViewModelFactory("0")
         ViewModelProviders.of(this,vmFactory).get(ArticleViewModel::class.java)
-    }
+    }*/
+    @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     public override val binding: ArticleBinding by lazy { ArticleBinding() }
 
-    //private var isSearching: Boolean=false
-    //private var searchQuery: String?= null
 
-    val bgColor by AttrValue(R.attr.colorSecondary)
-    val fgColor by AttrValue(R.attr.colorOnSecondary)
-
-/*
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        val vmFactory=
-            ViewModelFactory("0")
-        viewModel=ViewModelProviders.of(this,vmFactory).get(ArticleViewModel::class.java)
-        viewModel.observeState(this) {
-            renderUi(it)
-        }
-
-        viewModel.observeNotifications(this){
-            renderNotification(it)
-        }
-
-    }
-*/
-
-
-
+//    val bgColor by AttrValue(R.attr.colorSecondary)
+//    val fgColor by AttrValue(R.attr.colorOnSecondary)
 
     override fun setupViews() {
         setupToolbar()
@@ -91,10 +70,8 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
         //Log.e("Debug","renderSearchResult text="+tv_text_content.text)
         searchResult.forEach{(start,end)->
             content.setSpan(
-                SearchSpan(
-                    bgColor,
-                    fgColor
-                ),start,end,SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+                SearchSpan(),
+                start,end,SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
 
         renderSearchPosition(0)
@@ -110,10 +87,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
             val result=spans[searchPosition]
             Selection.setSelection(content,content.getSpanStart(result))
             content.setSpan(
-                SearchFocusSpan(
-                    bgColor,
-                    fgColor
-                ),
+                SearchFocusSpan(),
                 content.getSpanStart(result),content.getSpanEnd(result),
                 SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
             )
