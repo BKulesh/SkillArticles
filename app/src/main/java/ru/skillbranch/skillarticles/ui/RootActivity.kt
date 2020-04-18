@@ -28,6 +28,7 @@ import ru.skillbranch.skillarticles.extensions.dpToIntPx
 import ru.skillbranch.skillarticles.ui.custom.markdown.MarkdownBuilder
 import ru.skillbranch.skillarticles.ui.base.BaseActivity
 import ru.skillbranch.skillarticles.ui.base.Binding
+import ru.skillbranch.skillarticles.ui.custom.markdown.MarkdownImageView
 import ru.skillbranch.skillarticles.ui.custom.spans.SearchFocusSpan
 import ru.skillbranch.skillarticles.ui.custom.spans.SearchSpan
 import ru.skillbranch.skillarticles.ui.delegates.AttrValue
@@ -57,10 +58,15 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
         setupToolbar()
         setupBottomBar()
         setupSubMenu()
+
+        scroll.addView(MarkdownImageView(this,14f,"https://www.nathab.com//uploaded-files/carousels/HERO/Alaska-North/Iceland-shutterstock_596465372.jpg".toString(),"Iceland","it is Iceland"))
+
+
+
     }
 
     override fun renderSearchResult(searchResult: List<Pair<Int, Int>>) {
-        Log.e("Debug","renderSearchResult before")
+        /*Log.e("Debug","renderSearchResult before")
         val content=tv_text_content.text as Spannable
         tv_text_content.isVisible
         Log.e("Debug","renderSearchResult after")
@@ -74,11 +80,11 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
                 start,end,SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
 
-        renderSearchPosition(0)
+        renderSearchPosition(0)*/
     }
 
     override fun renderSearchPosition(searchPosition: Int) {
-        val content=tv_text_content.text as Spannable
+       /* val content=tv_text_content.text as Spannable
 
         val spans=content.getSpans<SearchSpan>()
         content.getSpans<SearchFocusSpan>().forEach { content.removeSpan(it) }
@@ -91,13 +97,13 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
                 content.getSpanStart(result),content.getSpanEnd(result),
                 SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
             )
-        }
+        }*/
     }
 
     override fun clearSearchResult() {
-        val content=tv_text_content.text as Spannable
+        /*val content=tv_text_content.text as Spannable
         content.getSpans<SearchSpan>()
-            .forEach { content.removeSpan(it) }
+            .forEach { content.removeSpan(it) }*/
     }
 
     override fun showSearchBar() {
@@ -201,7 +207,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
 
         btn_result_up.setOnClickListener{
             if (search_view.hasFocus()) search_view.clearFocus()
-            if (!tv_text_content.hasFocus()) tv_text_content.requestFocus()
+            //if (!tv_text_content.hasFocus()) tv_text_content.requestFocus()
             viewModel.handleUpResult()
         }
 
@@ -297,7 +303,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
         private var categoryIcon: Int by RenderProp(R.drawable.logo_placeholder) {toolbar.logo=getDrawable(it)}
 
         private var isBigText:Boolean by RenderProp(false){
-            if (it) {
+            /*if (it) {
                 tv_text_content.textSize=18f
                 btn_text_up.isChecked=true
                 btn_text_down.isChecked=false
@@ -306,7 +312,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
                 tv_text_content.textSize=14f
                 btn_text_up.isChecked=false
                 btn_text_down.isChecked=true
-            }
+            }*/
         }
 
         private var isDarkMode: Boolean by RenderProp(false,false){
@@ -323,7 +329,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
         private var searchPosition: Int by ObserveProp(0)
 
         private var content: String by ObserveProp("loading"){
-            MarkdownBuilder(this@RootActivity)
+            /*MarkdownBuilder(this@RootActivity)
                 .markdownToSpan(it)
                 .run{
                     Log.e("Debug","markdownToSpanresult=  ${this.toString()} ")
@@ -331,7 +337,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
                 }
             //tv_text_content.setText(it,TextView.BufferType.SPANNABLE)
             //tv_text_content.movementMethod=ScrollingMovementMethod()
-            tv_text_content.movementMethod= LinkMovementMethod.getInstance()
+            tv_text_content.movementMethod= LinkMovementMethod.getInstance()*/
         }
 
         override fun onFininishInflate() {

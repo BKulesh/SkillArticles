@@ -7,7 +7,7 @@ import android.util.AttributeSet
 import android.widget.TextView
 import androidx.core.graphics.withTranslation
 
-class MarkDownTextView @JvmOverloads constructor(
+class MarkdownTextView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet?=null,
     defStyleAttr: Int=0): TextView(context,attrs,defStyleAttr) {

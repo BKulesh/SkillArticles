@@ -174,6 +174,8 @@ class MultiLineRender(
 ): searchBgRender(padding){
     private var lineTop: Int=0
     private var lineBottom: Int=0
+    private var lineEndOffset=0
+    private var lineStartOffset=0
 
     override fun draw (
         canvas: Canvas,
@@ -185,10 +187,33 @@ class MultiLineRender(
         topExtraPadding: Int,
         bottomExtraPadding: Int
     ) {
+        lineEndOffset=(layout.getLineRight(startLine)+padding).toInt()
         lineTop=getLineTop(layout,startLine)
         lineBottom=getLineBottom(layout,startLine)
-        //drawble.setBounds(startOffset,lineTop,endOffSet,lineBottom)
-        //drawble.draw(canvas)
+        drawStart(canvas,startOffset-padding,lineTop,lineEndOffset,lineBottom)
+
+        for (line in startLine.inc() until endLine) {
+            lineTop=getLineTop(layout,line)+topExtraPadding
+            lineBottom=getLineTop(layout,line)
+            drawbleMiddle.setBounds(layout.getLineLeft(line).toInt()-padding,lineTop,
+            layout.getLineRight(line).toInt()+padding,lineBottom)
+        }
+
+        lineStartOffset=(layout.getLineLeft(startLine)-padding).toInt()
+        lineTop=getLineTop(layout,endLine)-bottomExtraPadding
+        lineBottom=getLineBottom(layout,endLine)
+        drawEnd(canvas,lineStartOffset,lineTop,endOffSet+padding,lineBottom)
+
+    }
+
+    private fun drawStart(canvas: Canvas,start: Int, top: Int,end: Int,bottom: Int) {
+        drawbleLeft.setBounds(start,top,end,bottom)
+        drawbleLeft.draw(canvas)
+    }
+
+    private fun drawEnd(canvas: Canvas,start: Int, top: Int,end: Int,bottom: Int) {
+        drawbleRight.setBounds(start,top,end,bottom)
+        drawbleRight.draw(canvas)
     }
 
 }

@@ -31,6 +31,7 @@ class MarkdownBuilder(context: Context) {
 
     private val colorOnSurface=context.attrValue(R.attr.colorOnSurface)
     private val colorSurface=context.attrValue(R.attr.colorSurface)
+    private val opacityColorSurface=context.getColor(R.color.opacity_color_surface)
     private val cornerRadius=context.dpToPx(8)
     //private val colorSecondary=R.attr.colorSecondary
     private val linkIcon=context.getDrawable(R.drawable.ic_link_black_24dp)!!.apply{
@@ -103,7 +104,7 @@ class MarkdownBuilder(context: Context) {
                         }
                         }
                         is Element.InlineCode->{
-                            inSpans(InlineCodeSpan(colorOnSurface,colorSurface,cornerRadius,gap)){
+                            inSpans(InlineCodeSpan(colorOnSurface,opacityColorSurface,cornerRadius,gap)){
                                 append(element.text)
                             }
                         }
