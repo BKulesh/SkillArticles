@@ -8,11 +8,13 @@ import ru.skillbranch.skillarticles.data.AppSettings
 import ru.skillbranch.skillarticles.data.ArticleData
 import ru.skillbranch.skillarticles.data.ArticlePersonalInfo
 import ru.skillbranch.skillarticles.data.repositories.ArticleRepository
+import ru.skillbranch.skillarticles.data.repositories.MarkdownElement
 import ru.skillbranch.skillarticles.extensions.data.toAppSettings
 import ru.skillbranch.skillarticles.extensions.data.toArticlePersonalInfo
 import ru.skillbranch.skillarticles.extensions.format
 import ru.skillbranch.skillarticles.extensions.indexesOf
 import ru.skillbranch.skillarticles.data.repositories.MarkdownParser
+import ru.skillbranch.skillarticles.data.repositories.clearContent
 import ru.skillbranch.skillarticles.viewmodels.base.BaseViewModel
 import ru.skillbranch.skillarticles.viewmodels.base.IViewModelState
 import ru.skillbranch.skillarticles.viewmodels.base.Notify
@@ -70,7 +72,7 @@ class ArticleViewModel(private val articleId: String): BaseViewModel<ArticleStat
 
     }
 
-    private fun getArticleContent():LiveData<String?>
+    private fun getArticleContent():LiveData<List<MarkdownElement>?>
     {
         return repository.loadArticleContent(articleId)
     }
@@ -152,8 +154,7 @@ class ArticleViewModel(private val articleId: String): BaseViewModel<ArticleStat
     fun handleSearch(query: String?){
         query ?: return
         //Log.e("Debug","handleSearch currentState.content="+currentState.content)
-        if (clearContent==null) clearContent=
-            MarkdownParser.clear(currentState.content!!)
+        if (clearContent==null && currentState.content.isNotEmpty()) clearContent=currentState.content.clearContent()
         //Log.e("Debug","handleSearch currentState.content="+currentState.content)
         //if (currentState.content.isNullOrEmpty()) Log.e("Debug","handleSearch currentState.content=null")
         Log.e("Debug","handleSearch clearContent="+clearContent)
@@ -202,7 +203,7 @@ data class ArticleState(
     val date: String?=null,//дата публикации
     val poster: String?=null,//обложка статьи
     val author: Any?=null,//автор статьи
-    val content: String? = null, // содержание
+    val content: List<MarkdownElement> = emptyList(), // содержание
     val reviews: List<Any> = emptyList() // комментарии
 ): IViewModelState{
     override fun save(outState: Bundle) {

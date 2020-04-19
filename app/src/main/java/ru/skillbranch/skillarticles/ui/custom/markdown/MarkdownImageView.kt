@@ -79,6 +79,9 @@ class MarkdownImageView private constructor(
     }
 
     init {
+
+        //setBackgroundColor(Color.RED)
+
         layoutParams= LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT)
         iv_image=ImageView(context).apply {
             //layoutParams= LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT)
@@ -95,7 +98,7 @@ class MarkdownImageView private constructor(
             clipToOutline=true
         }
         addView(iv_image)
-        tv_title=MarkdownTextView(context).apply {
+        tv_title=MarkdownTextView(context,fontSize*0.75f).apply {
             //layoutParams=LayoutParams(LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT))
             setText("title",TextView.BufferType.SPANNABLE)
             setTextColor(colorOnBackground)
