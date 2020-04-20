@@ -1,5 +1,8 @@
 package ru.skillbranch.skillarticles.ui
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.os.Bundle
 import android.text.Selection
 import android.text.Spannable
@@ -18,6 +21,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.text.getSpans
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_root.*
 import kotlinx.android.synthetic.main.layout_bottombar.*
@@ -27,6 +31,7 @@ import ru.skillbranch.skillarticles.R
 import ru.skillbranch.skillarticles.data.repositories.MarkdownElement
 import ru.skillbranch.skillarticles.data.repositories.MarkdownText
 import ru.skillbranch.skillarticles.extensions.dpToIntPx
+import ru.skillbranch.skillarticles.extensions.hideKeyboard
 import ru.skillbranch.skillarticles.ui.custom.markdown.MarkdownBuilder
 import ru.skillbranch.skillarticles.ui.base.BaseActivity
 import ru.skillbranch.skillarticles.ui.base.Binding
@@ -66,7 +71,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
 
 
     }
-
+/*
     override fun renderSearchResult(searchResult: List<Pair<Int, Int>>) {
         /*Log.e("Debug","renderSearchResult before")
         val content=tv_text_content.text as Spannable
@@ -107,7 +112,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
         content.getSpans<SearchSpan>()
             .forEach { content.removeSpan(it) }*/
     }
-
+*/
     override fun showSearchBar() {
         bottombar.setSearchState(true)
         //scroll.setMarginOptionally(dpToIntPx(56))
@@ -208,13 +213,16 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
         btn_settings.setOnClickListener{viewModel.handleToggleMenu()}
 
         btn_result_up.setOnClickListener{
-            if (search_view.hasFocus()) search_view.clearFocus()
-            //if (!tv_text_content.hasFocus()) tv_text_content.requestFocus()
+            //if (search_view.hasFocus()) search_view.clearFocus()
+            if (!tv_text_content.hasFocus()) tv_text_content.requestFocus()
+            hideKeyboard(btn_result_up)
             viewModel.handleUpResult()
         }
 
         btn_result_down.setOnClickListener{
-            if (search_view.hasFocus()) search_view.clearFocus()
+            //if (search_view.hasFocus()) search_view.clearFocus()
+            if (!tv_text_content.hasFocus()) tv_text_content.requestFocus()
+            hideKeyboard(btn_result_down)
             viewModel.handleDownResult()
         }
 
@@ -286,6 +294,15 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
 
     }
 
+    private fun setupCopyListener() {
+        tv_text_content.setCopyListener { copy->
+            val clipboard=getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clip=ClipData.newPlainText("Copied code",copy)
+            clipboard.setPrimaryClip(clip)
+            viewModel.handleCopyCode()
+        }
+    }
+
     inner class  ArticleBinding(): Binding(){
         var isFocusedSearch:Boolean=false
         //private var isSearching: Boolean=false
@@ -305,7 +322,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
         private var categoryIcon: Int by RenderProp(R.drawable.logo_placeholder) {toolbar.logo=getDrawable(it)}
 
         private var isBigText:Boolean by RenderProp(false){
-            /*if (it) {
+            if (it) {
                 tv_text_content.textSize=18f
                 btn_text_up.isChecked=true
                 btn_text_down.isChecked=false
@@ -314,7 +331,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
                 tv_text_content.textSize=14f
                 btn_text_up.isChecked=false
                 btn_text_down.isChecked=true
-            }*/
+            }
         }
 
         private var isDarkMode: Boolean by RenderProp(false,false){
@@ -324,7 +341,20 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
         }
 
         var isSearch: Boolean by ObserveProp(false){
-            if (it) showSearchBar() else hideSearchBar()
+            if (it) {
+                showSearchBar()
+                with(toolbar) {
+                    (layoutParams as AppBarLayout.LayoutParams).scrollFlags=
+                        AppBarLayout.LayoutParams.SCROLL_FLAG_NO_SCROLL
+                }
+            } else {
+                hideSearchBar()
+                with(toolbar) {
+                    (layoutParams as AppBarLayout.LayoutParams).scrollFlags=
+                        AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or
+                                AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS_COLLAPSED
+                }
+            }
         }
 
         private var searchResults: List<Pair<Int,Int>> by ObserveProp(emptyList())
@@ -333,6 +363,9 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
         private var content: List<MarkdownElement> by ObserveProp(emptyList()){
             tv_text_content.isLoading=it.isEmpty()
             tv_text_content.setContent(it)
+            if (it.isNotEmpty()) {
+                setupCopyListener()
+            }
             /*MarkdownBuilder(this@RootActivity)
                 .markdownToSpan(it)
                 .run{
@@ -352,11 +385,11 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
                 ::searchPosition
             ){ilc,iss,sr,sp->
                 if (!ilc && iss) {
-                    renderSearchResult(sr)
-                    renderSearchPosition(sp)
+                    tv_text_content.renderSearchResult(sr)
+                    tv_text_content.renderSearchPosition(sr.getOrNull(sp))
                 }
                 if (!ilc && !iss) {
-                    clearSearchResult()
+                    tv_text_content.clearSearchResult()
                 }
                  bottombar.bindSearchInfo(sr.size,sp)
             }

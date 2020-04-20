@@ -12,14 +12,15 @@ interface IMarkdownView
     var fontSize: Float
     val spannableContent: Spannable
 
-    fun renderSearchResukt(
+    fun renderSearchResult(
         results: List<Pair<Int,Int>>,
         offset: Int
     ){
         clearSearchResult()
         val offsetResult=results
             .map{(start,end)->start.minus(offset) to end.minus(offset)}
-        offsetResult.forEach{(start,end)->
+        try {
+        offsetResult.forEach { (start, end) ->
             spannableContent.setSpan(
                 SearchSpan(),
                 start,
@@ -27,6 +28,7 @@ interface IMarkdownView
                 SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
             )
         }
+        } catch(e: Exception) {}
 
     }
 

@@ -92,6 +92,11 @@ class ArticleViewModel(private val articleId: String): BaseViewModel<ArticleStat
     fun handleDownText() {
         repository.updateSettings(currentState.toAppSettings().copy(isBigText=false))
     }
+
+    fun handleCopyCode(){
+        notify(Notify.TextMessage("Code copy to clipboard."))
+    }
+
     fun handleNightMode() {
         val settings=currentState.toAppSettings()
         repository.updateSettings(settings.copy(isDarkMode = !settings.isDarkMode))

@@ -7,6 +7,8 @@ import android.text.style.LeadingMarginSpan
 import android.util.Log
 import androidx.annotation.ColorInt
 import androidx.annotation.Px
+import ru.skillbranch.skillarticles.extensions.getLineBottomWithoutSpacing
+import ru.skillbranch.skillarticles.extensions.getLineBottomWithoutPadding
 
 
 class UnorderedListSpan(
@@ -26,7 +28,7 @@ class UnorderedListSpan(
     override fun drawLeadingMargin(
         canvas: Canvas, paint: Paint, currentMarginLocation: Int, paragraphDirection: Int,
         lineTop: Int, lineBaseline: Int, lineBottom: Int, text: CharSequence?, lineStart: Int,
-        lineEnd: Int, isFirstLine: Boolean, layout: Layout?
+        lineEnd: Int, isFirstLine: Boolean, layout: Layout
     ) {
         if (isFirstLine) {
             //val oldColor=paint.color
@@ -34,7 +36,7 @@ class UnorderedListSpan(
                 //paint.color = bulletColor
                 canvas.drawCircle(
                     gapWidth + currentMarginLocation + bulletRadius,
-                    (lineTop + lineBottom) / 2f,
+                    (lineTop + layout.getLineBottomWithoutPadding(layout.getLineForOffset(lineStart))) / 2f,
                     bulletRadius,
                     paint
                 )

@@ -14,10 +14,11 @@ import ru.skillbranch.skillarticles.extensions.dpToIntPx
 import ru.skillbranch.skillarticles.ui.custom.spans.SearchSpan
 import ru.skillbranch.skillarticles.extensions.*
 import ru.skillbranch.skillarticles.ui.custom.spans.HeaderSpan
+import ru.skillbranch.skillarticles.ui.custom.spans.SearchFocusSpan
 
 class SearchBgHelper (
     context: Context,
-    private val focusListener: (Int) -> Unit
+    private val focusListener: (Int,Int) -> Unit
 ) {
   private val padding: Int=context.dpToIntPx(4)
   private val radius: Float=context.dpToIntPx(8).toFloat()
@@ -99,6 +100,10 @@ class SearchBgHelper (
             spanEnd=text.getSpanEnd(it)
             startLine=layout.getLineForOffset(spanStart)
             endLine=layout.getLineForOffset(spanEnd)
+
+            if (it is SearchFocusSpan) {
+                focusListener.invoke(layout.getLineTop(startLine),layout.getLineBottom(startLine))
+            }
 
             headerSpans=text.getSpans(spanStart,spanEnd, HeaderSpan::class.java)
 

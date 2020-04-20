@@ -3,6 +3,7 @@ package ru.skillbranch.skillarticles.ui.custom.markdown
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Rect
 import android.text.Spannable
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
@@ -11,6 +12,7 @@ import android.widget.TextView
 import androidx.core.graphics.withTranslation
 import ru.skillbranch.skillarticles.R
 import ru.skillbranch.skillarticles.extensions.attrValue
+import ru.skillbranch.skillarticles.extensions.dpToIntPx
 
 class MarkdownTextView @JvmOverloads constructor(
     context: Context,
@@ -28,9 +30,12 @@ class MarkdownTextView @JvmOverloads constructor(
         get() = text as Spannable
 
     val color=context.attrValue(R.attr.colorOnBackground)
+    private  val focusRect= Rect()
 
-    private val searchBgHelper=SearchBgHelper(context) {
+    private val searchBgHelper=SearchBgHelper(context) {top,bottom->
+        focusRect.set(0,top-context.dpToIntPx(56),width,bottom+context.dpToIntPx(56))
 
+        requestRectangleOnScreen(focusRect,false)
     }
 
     init {
