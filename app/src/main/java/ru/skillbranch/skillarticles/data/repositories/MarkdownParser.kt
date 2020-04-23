@@ -254,7 +254,7 @@ object MarkdownParser {
                     val (alt, url, title) = "^!\\[([^\\[\\]]*?)?]\\((.*?) \"(.*?)\"\\)$".toRegex()
                         .find(text)!!.destructured
 
-                    val element = Element.Image(url, alt, text)
+                    val element = Element.Image(url,if (alt.isBlank()) null else  alt, title)
                     parents.add(element)
                     lastStartIndex = endIndex
                 }
@@ -1031,7 +1031,7 @@ private fun List<Element>.spread(): List<Element> {
 private fun Element.clearContent():String{
     return StringBuilder().apply{
         val element=this@clearContent
-        if (element.elements.isEmpty()) append(element)
+        if (element.elements.isEmpty()) append(element.text)
         else element.elements.forEach{append(it.clearContent())}
     }.toString()
 }

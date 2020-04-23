@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.text.Layout
 import android.text.Spanned
+import androidx.annotation.VisibleForTesting
 import androidx.core.graphics.ColorUtils
 import androidx.core.text.getSpans
 import ru.skillbranch.skillarticles.extensions.attrValue
@@ -16,10 +17,16 @@ import ru.skillbranch.skillarticles.extensions.*
 import ru.skillbranch.skillarticles.ui.custom.spans.HeaderSpan
 import ru.skillbranch.skillarticles.ui.custom.spans.SearchFocusSpan
 
+@VisibleForTesting(otherwise=VisibleForTesting.PRIVATE)
 class SearchBgHelper (
     context: Context,
-    private val focusListener: (Int,Int) -> Unit
+    private val focusListener: ((Int,Int) -> Unit)?=null,
+    mockDrawable: Drawable?=null
 ) {
+
+    constructor(context: Context,focusListener: ((Int, Int) -> Unit)?): this(
+        context,focusListener,null
+    )
   private val padding: Int=context.dpToIntPx(4)
   private val radius: Float=context.dpToIntPx(8).toFloat()
   private val borderWidth: Int=context.dpToIntPx(1)
@@ -102,7 +109,7 @@ class SearchBgHelper (
             endLine=layout.getLineForOffset(spanEnd)
 
             if (it is SearchFocusSpan) {
-                focusListener.invoke(layout.getLineTop(startLine),layout.getLineBottom(startLine))
+                focusListener?.invoke(layout.getLineTop(startLine),layout.getLineBottom(startLine))
             }
 
             headerSpans=text.getSpans(spanStart,spanEnd, HeaderSpan::class.java)

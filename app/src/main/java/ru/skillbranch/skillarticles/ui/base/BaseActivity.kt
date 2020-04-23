@@ -28,17 +28,27 @@ abstract class BaseActivity<T:BaseViewModel<out IViewModelState>> : AppCompatAct
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        Log.e("Debug","onSaveInstanceState")
+        Log.e("Debug","lifeCircle onSaveInstanceState")
         viewModel.saveState(outState)
         binding.saveUI(outState)
         super.onSaveInstanceState(outState)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        Log.e("Debug","lifeCircle onRestoreInstanceState")
         super.onRestoreInstanceState(savedInstanceState)
         viewModel.restoreState(savedInstanceState)
         binding.restoreUI(savedInstanceState)
     }
+
+    //override fun onRestart() {
+    //    super.onRestart()
+    //    Log.e("Debug","lifeCircle onRestart")
+    //}
+
+    //override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
+    //    super.onCreate(savedInstanceState, persistentState)
+    //}
 
     internal inline fun<reified T:ViewModel> provideViewModel(arg : Any?) :ViewModelDelegate<T>{
         return ViewModelDelegate(T::class.java,arg)

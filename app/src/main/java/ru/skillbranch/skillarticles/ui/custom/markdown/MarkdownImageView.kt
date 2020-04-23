@@ -195,12 +195,12 @@ class MarkdownImageView private constructor(
                 isVisible=false
 
             }
-        }
         addView(tv_alt)
 
         iv_image.setOnClickListener{
             if (tv_alt?.isVisible==true) animateHideAlt()
                                 else animateShowAlt()
+            }
         }
     }
 

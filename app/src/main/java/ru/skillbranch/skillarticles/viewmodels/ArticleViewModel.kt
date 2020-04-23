@@ -166,7 +166,7 @@ class ArticleViewModel(private val articleId: String): BaseViewModel<ArticleStat
         val result=clearContent
             .indexesOf(query)
             .map{it to it + query.length}
-        //Log.e("Debug","before handleSearch")
+        //Log.e("Debug","handleSearch clearContent="+clearContent)
         //result.forEach { Log.e("Debug"," handleSearch massive "+it.toString()) }
         //Log.e("Debug","after handleSearch")
         updateState { it.copy(searchQuery= query,searchResults = result,searchPosition = 0) }

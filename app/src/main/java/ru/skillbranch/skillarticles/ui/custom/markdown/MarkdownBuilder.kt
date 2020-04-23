@@ -91,7 +91,7 @@ class MarkdownBuilder(context: Context) {
                             }
                         }
                         }
-                        is Element.Strike-> { inSpans(StrikethroughSpan())                            {
+                        is Element.Strike-> { inSpans(StrikethroughSpan()){
                             for (child in element.elements){
                                 buildElement(child,builder)
                             }
