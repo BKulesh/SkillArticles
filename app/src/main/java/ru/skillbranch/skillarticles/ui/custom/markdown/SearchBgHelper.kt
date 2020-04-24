@@ -10,8 +10,6 @@ import android.text.Spanned
 import androidx.annotation.VisibleForTesting
 import androidx.core.graphics.ColorUtils
 import androidx.core.text.getSpans
-import ru.skillbranch.skillarticles.extensions.attrValue
-import ru.skillbranch.skillarticles.extensions.dpToIntPx
 import ru.skillbranch.skillarticles.ui.custom.spans.SearchSpan
 import ru.skillbranch.skillarticles.extensions.*
 import ru.skillbranch.skillarticles.ui.custom.spans.HeaderSpan
@@ -24,9 +22,13 @@ class SearchBgHelper (
     mockDrawable: Drawable?=null
 ) {
 
-    constructor(context: Context,focusListener: ((Int, Int) -> Unit)?): this(
+
+
+    constructor(context: Context,focusListener: ((Int, Int) -> Unit)): this(
         context,focusListener,null
-    )
+   )
+
+
   private val padding: Int=context.dpToIntPx(4)
   private val radius: Float=context.dpToIntPx(8).toFloat()
   private val borderWidth: Int=context.dpToIntPx(1)
@@ -35,58 +37,49 @@ class SearchBgHelper (
   private val alphaColor: Int=ColorUtils.setAlphaComponent(secondaryColor,160)
 
     val drawble: Drawable by lazy{
-        GradientDrawable().apply {
-            shape=GradientDrawable.RECTANGLE
-            //cornerRadii=FloatArray(8).apply { fill(radius,0,size) }
-            color= ColorStateList.valueOf(alphaColor)
-            setStroke(borderWidth,secondaryColor)
-        }
+            mockDrawable ?: GradientDrawable().apply {
+                shape = GradientDrawable.RECTANGLE
+                cornerRadii = FloatArray(8).apply {
+                    fill(radius, 0, size) }
+                    color = ColorStateList.valueOf(alphaColor)
+                    setStroke(borderWidth, secondaryColor)
+                }
+            }
 
-    }
 
-  val drawbleMiddle: Drawable by lazy{
-      GradientDrawable().apply {
-          shape=GradientDrawable.RECTANGLE
-          //cornerRadii=FloatArray(8).apply { fill(radius,0,size) }
-          color= ColorStateList.valueOf(alphaColor)
-          setStroke(borderWidth,secondaryColor)
-      }
+            val drawbleMiddle: Drawable by lazy {
+                mockDrawable ?: GradientDrawable().apply {
+                    shape = GradientDrawable.RECTANGLE
+                    //cornerRadii=FloatArray(8).apply { fill(radius,0,size) }
+                    color = ColorStateList.valueOf(alphaColor)
+                    setStroke(borderWidth, secondaryColor)
+                }
 
-  }
+            }
 
-    val drawbleLeft: Drawable by lazy{
-        GradientDrawable().apply {
-            shape=GradientDrawable.RECTANGLE
-            cornerRadii=floatArrayOf(radius,radius,0f,0f,0f,0f,radius,radius)
-            color= ColorStateList.valueOf(alphaColor)
-            setStroke(borderWidth,secondaryColor)
-        }
+            val drawbleLeft: Drawable by lazy {
+                mockDrawable ?: GradientDrawable().apply {
+                    shape = GradientDrawable.RECTANGLE
+                    cornerRadii = floatArrayOf(radius, radius, 0f, 0f, 0f, 0f, radius, radius)
+                    color = ColorStateList.valueOf(alphaColor)
+                    setStroke(borderWidth, secondaryColor)
+                }
 
-    }
+            }
 
-    val drawbleRight: Drawable by lazy{
-        GradientDrawable().apply {
-            shape=GradientDrawable.RECTANGLE
-            cornerRadii=floatArrayOf(0f,0f,radius,radius,radius,radius,0f,0f)
-            color= ColorStateList.valueOf(alphaColor)
-            setStroke(borderWidth,secondaryColor)
-        }
-
-    }
+            val drawbleRight: Drawable by lazy {
+                mockDrawable ?: GradientDrawable().apply {
+                    shape = GradientDrawable.RECTANGLE
+                    cornerRadii = floatArrayOf(0f, 0f, radius, radius, radius, radius, 0f, 0f)
+                    color = ColorStateList.valueOf(alphaColor)
+                    setStroke(borderWidth, secondaryColor)
+                }
+            }
 
 
     private lateinit var render:searchBgRender
-    private val singleLineRender:searchBgRender by lazy {
-        SingleLineRender(padding,drawble)
-    }
-
-    private val multiLineRender:searchBgRender by lazy {
-            MultiLineRender(padding,
-                drawbleLeft,
-                drawbleMiddle,
-                drawbleRight)
-    }
-
+    private val singleLineRender:searchBgRender=SingleLineRender(padding,drawble)
+    private val multiLineRender:searchBgRender=MultiLineRender(padding, drawbleLeft, drawbleMiddle, drawbleRight)
 
     private lateinit var spans: Array<out SearchSpan>
     private lateinit var headerSpans: Array<out HeaderSpan>

@@ -106,7 +106,7 @@ class InstrumentalTest1 {
         //single line
         val scenario = ActivityScenario.launch(TestActivity::class.java)
         scenario.onActivity {
-            val helper = spy(SearchBgHelper(it, mockDrawable = mockDrawable))
+            val helper =spy(SearchBgHelper(it,mockDrawable =  mockDrawable))
             val mv = MarkdownTextView(it, 14f, helper).apply {
                 setText(string, TextView.BufferType.SPANNABLE)
                 setPadding(it.dpToIntPx(16))
