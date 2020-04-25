@@ -126,7 +126,8 @@ class MarkdownContentView @JvmOverloads constructor(
 
         children.forEachIndexed{index,view->
             view as IMarkdownView
-            view.renderSearchResult(result[index],elements[index].offset)
+            //view.renderSearchResult(result[index],elements[index].offset)
+            //view.renderSearchResult(listOf(27 to 65), 0)
         }
     }
 

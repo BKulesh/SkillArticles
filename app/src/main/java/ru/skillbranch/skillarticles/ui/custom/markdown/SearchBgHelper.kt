@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.text.Layout
 import android.text.Spanned
+import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.core.graphics.ColorUtils
 import androidx.core.text.getSpans
@@ -32,6 +33,9 @@ class SearchBgHelper (
   private val padding: Int=context.dpToIntPx(4)
   private val radius: Float=context.dpToIntPx(8).toFloat()
   private val borderWidth: Int=context.dpToIntPx(1)
+  //private  val wdp: Int=context.dpToIntPx(1)
+
+
 
   private val secondaryColor: Int=context.attrValue(ru.skillbranch.skillarticles.R.attr.colorSecondary)
   private val alphaColor: Int=ColorUtils.setAlphaComponent(secondaryColor,160)
@@ -94,6 +98,7 @@ class SearchBgHelper (
     private var bottomExtraPadding=0
 
     fun draw(canvas: Canvas, text: Spanned, layout: Layout){
+        Log.e("Debug","SearchBgHelper! ")
         spans=text.getSpans()
         spans.forEach{
             spanStart=text.getSpanStart(it)
@@ -116,7 +121,9 @@ class SearchBgHelper (
                 }
 
             startOffSet=layout.getPrimaryHorizontal(spanStart).toInt()
+            Log.e("Debug","setBounds spanStart=$spanStart startOffSet=$startOffSet")
             endOffSet=layout.getPrimaryHorizontal(spanEnd).toInt()
+            Log.e("Debug","setBounds spanEnd=$spanEnd endOffSet=$endOffSet")
 
             render= if (startLine==endLine) singleLineRender else multiLineRender
             render.draw(canvas,layout,startLine,endLine,startOffSet,endOffSet,topExtraPadding,bottomExtraPadding)
@@ -192,8 +199,9 @@ class MultiLineRender(
         topExtraPadding: Int,
         bottomExtraPadding: Int
     ) {
+        Log.e("Debug","drawMiuti setBounds startOffset=$startOffset")
         lineEndOffset=(layout.getLineRight(startLine)+padding).toInt()
-        lineTop=getLineTop(layout,startLine)
+        lineTop=getLineTop(layout,startLine)+topExtraPadding
         lineBottom=getLineBottom(layout,startLine)
         drawStart(canvas,startOffset-padding,lineTop,lineEndOffset,lineBottom)
 
@@ -205,19 +213,21 @@ class MultiLineRender(
         }
 
         lineStartOffset=(layout.getLineLeft(startLine)-padding).toInt()
-        lineTop=getLineTop(layout,endLine)-bottomExtraPadding
-        lineBottom=getLineBottom(layout,endLine)
+        lineTop=getLineTop(layout,endLine)
+        lineBottom=getLineBottom(layout,endLine)-bottomExtraPadding
         drawEnd(canvas,lineStartOffset,lineTop,endOffSet+padding,lineBottom)
 
     }
 
     private fun drawStart(canvas: Canvas,start: Int, top: Int,end: Int,bottom: Int) {
         drawbleLeft.setBounds(start,top,end,bottom)
+        Log.e("Debug","drawStart setBounds $start,$top,$end,$bottom")
         drawbleLeft.draw(canvas)
     }
 
     private fun drawEnd(canvas: Canvas,start: Int, top: Int,end: Int,bottom: Int) {
         drawbleRight.setBounds(start,top,end,bottom)
+        Log.e("Debug","drawEnd setBounds $start,$top,$end,$bottom")
         drawbleRight.draw(canvas)
     }
 

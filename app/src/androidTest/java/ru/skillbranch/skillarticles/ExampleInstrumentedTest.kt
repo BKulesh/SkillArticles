@@ -103,9 +103,10 @@ class InstrumentalTest1 {
 
         val mockDrawable = mock(Drawable::class.java)
 
+
         //single line
         val scenario = ActivityScenario.launch(TestActivity::class.java)
-        scenario.onActivity {
+      scenario.onActivity {
             val helper =spy(SearchBgHelper(it,mockDrawable =  mockDrawable))
             val mv = MarkdownTextView(it, 14f, helper).apply {
                 setText(string, TextView.BufferType.SPANNABLE)
@@ -130,6 +131,8 @@ class InstrumentalTest1 {
             "left: -8, top: 24, right: 304, bottom : 90",
             "left: ${singleRes.allValues[0]}, top: ${singleRes.allValues[1]}, right: ${singleRes.allValues[2]}, bottom : ${singleRes.allValues[3]}"
         )
+
+
         inOrder.verify(mockDrawable).draw(any())
 
         //multi line
@@ -163,6 +166,7 @@ class InstrumentalTest1 {
             "left: -8, top: 156, right: 135, bottom : 222",
             "left: ${multRes.allValues[8]}, top: ${multRes.allValues[9]}, right: ${multRes.allValues[10]}, bottom : ${multRes.allValues[11]}"
         )
+
         inOrder.verify(mockDrawable).draw(any())
 
         //simple text
@@ -184,13 +188,15 @@ class InstrumentalTest1 {
             "left: ${simpleRes.allValues[0]}, top: ${simpleRes.allValues[1]}, right: ${simpleRes.allValues[2]}, bottom : ${simpleRes.allValues[3]}"
         )
         inOrder.verify(mockDrawable).draw(any())
+
+
     }
 
 
 
     @Test
     fun draw_markdown_image_view() {
-
+                
         var viewUnderTest: MarkdownImageView? = null
         val scenario = ActivityScenario.launch(TestActivity::class.java)
         scenario.onActivity {

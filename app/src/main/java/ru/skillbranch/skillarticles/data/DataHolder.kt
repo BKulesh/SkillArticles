@@ -116,6 +116,7 @@ data class AppSettings(
 //* test2
 //* test3
 //* test4"""
+val longText1t: String = "Header1 for first line and for second line also header for third line"
 
 val longText: String = """
 # Drawing a rounded corner background on text
