@@ -27,7 +27,6 @@ import kotlin.math.hypot
 
 
 @SuppressLint("ViewConstructor")
-//class MarkdownImageView private constructor(
 class MarkdownImageView private constructor(
     context: Context,
     fontSize: Float
@@ -112,7 +111,7 @@ class MarkdownImageView private constructor(
 
 
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
-    override fun onMeasure(widthMeasureSpec: Int,heightMeasureSpec: Int){
+    public override fun onMeasure(widthMeasureSpec: Int,heightMeasureSpec: Int){
         var userHeight=0
         val width=View.getDefaultSize(suggestedMinimumWidth,widthMeasureSpec)
 
@@ -132,7 +131,7 @@ class MarkdownImageView private constructor(
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
-    override fun onLayout(changed: Boolean,l:Int,t: Int,r: Int,b: Int){
+    public override fun onLayout(changed: Boolean,l:Int,t: Int,r: Int,b: Int){
         var userHeight=0
         val bodyWith=r-l-paddingLeft-paddingRight
         val left=paddingLeft
