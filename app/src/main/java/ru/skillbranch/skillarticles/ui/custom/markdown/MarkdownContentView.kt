@@ -88,8 +88,9 @@ class MarkdownContentView @JvmOverloads constructor(
                         .run{
                             tv.setText(this,TextView.BufferType.SPANNABLE)
                         }
-
+                    tv.id=ids.count()+1
                     addView(tv)
+                    ids.add(0)
                 }
                 is MarkdownElement.Image -> {
                     val iv=MarkdownImageView(
@@ -99,7 +100,9 @@ class MarkdownContentView @JvmOverloads constructor(
                         it.image.text,
                         it.image.alt
                     )
+                    iv.id=ids.count()+1
                     addView(iv)
+                    ids.add(0)
                 }
                 is MarkdownElement.Scroll -> {
                     val sv=MarkdownCodeView(
@@ -107,7 +110,9 @@ class MarkdownContentView @JvmOverloads constructor(
                         textSize,
                         it.blockCode.text//,padding,padding.toFloat()
                     )
+                    sv.id=ids.count()+1
                     addView(sv)
+                    ids.add(0)
                 }
             }
         }

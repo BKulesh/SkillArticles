@@ -29,7 +29,7 @@ class MarkdownCodeView private constructor(
     override var fontSize: Float = fontSize
     set(value) {
         tv_codeView.textSize=value*0.85f
-            field=value
+        field=value
     }
 
     override val spannableContent: Spannable
@@ -147,6 +147,7 @@ class MarkdownCodeView private constructor(
         var usedHeight=0
         val width= View.getDefaultSize(suggestedMinimumWidth,widthMeasureSpec)
         measureChild(sv_scroll,widthMeasureSpec,heightMeasureSpec)
+        measureChild(iv_copy,widthMeasureSpec,heightMeasureSpec)
 
         usedHeight+=sv_scroll.measuredHeight+paddingTop+paddingTop
         setMeasuredDimension(width,usedHeight)
