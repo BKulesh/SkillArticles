@@ -98,7 +98,7 @@ class SearchBgHelper (
     private var bottomExtraPadding=0
 
     fun draw(canvas: Canvas, text: Spanned, layout: Layout){
-        Log.e("Debug","SearchBgHelper! ")
+        //Log.e("Debug","SearchBgHelper! ")
         spans=text.getSpans()
         spans.forEach{
             spanStart=text.getSpanStart(it)
@@ -121,9 +121,9 @@ class SearchBgHelper (
                 }
 
             startOffSet=layout.getPrimaryHorizontal(spanStart).toInt()
-            Log.e("Debug","setBounds spanStart=$spanStart startOffSet=$startOffSet")
+            //Log.e("Debug","setBounds spanStart=$spanStart startOffSet=$startOffSet")
             endOffSet=layout.getPrimaryHorizontal(spanEnd).toInt()
-            Log.e("Debug","setBounds spanEnd=$spanEnd endOffSet=$endOffSet")
+            //Log.e("Debug","setBounds spanEnd=$spanEnd endOffSet=$endOffSet")
 
             render= if (startLine==endLine) singleLineRender else multiLineRender
             render.draw(canvas,layout,startLine,endLine,startOffSet,endOffSet,topExtraPadding,bottomExtraPadding)
@@ -199,7 +199,7 @@ class MultiLineRender(
         topExtraPadding: Int,
         bottomExtraPadding: Int
     ) {
-        Log.e("Debug","drawMiuti setBounds startOffset=$startOffset")
+        //Log.e("Debug","drawMiuti setBounds startOffset=$startOffset")
         lineEndOffset=(layout.getLineRight(startLine)+padding).toInt()
         lineTop=getLineTop(layout,startLine)+topExtraPadding
         lineBottom=getLineBottom(layout,startLine)
@@ -221,13 +221,13 @@ class MultiLineRender(
 
     private fun drawStart(canvas: Canvas,start: Int, top: Int,end: Int,bottom: Int) {
         drawbleLeft.setBounds(start,top,end,bottom)
-        Log.e("Debug","drawStart setBounds $start,$top,$end,$bottom")
+        //Log.e("Debug","drawStart setBounds $start,$top,$end,$bottom")
         drawbleLeft.draw(canvas)
     }
 
     private fun drawEnd(canvas: Canvas,start: Int, top: Int,end: Int,bottom: Int) {
         drawbleRight.setBounds(start,top,end,bottom)
-        Log.e("Debug","drawEnd setBounds $start,$top,$end,$bottom")
+            //Log.e("Debug","drawEnd setBounds $start,$top,$end,$bottom")
         drawbleRight.draw(canvas)
     }
 
