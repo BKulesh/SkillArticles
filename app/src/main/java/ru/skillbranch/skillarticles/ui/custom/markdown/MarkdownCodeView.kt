@@ -187,6 +187,9 @@ class MarkdownCodeView private constructor(
     private fun toggleColors() {
         isManual=true
         isDark=!isDark
+        if (isDark) (parent as MarkdownContentView).ids[id-1]=1
+        else (parent as MarkdownContentView).ids[id-1]=0
+
         applyColors()
     }
 

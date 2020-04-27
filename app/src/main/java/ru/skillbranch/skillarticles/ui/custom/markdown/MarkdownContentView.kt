@@ -21,7 +21,7 @@ class MarkdownContentView @JvmOverloads constructor(
     private lateinit var elements: List<MarkdownElement>
 
     //for restore
-    private var ids = arrayListOf<Int>()
+    public var ids = arrayListOf<Int>()
 
     var textSize by Delegates.observable(14f) {_,old,value->
         if (value==old) return@observable
@@ -88,9 +88,9 @@ class MarkdownContentView @JvmOverloads constructor(
                         .run{
                             tv.setText(this,TextView.BufferType.SPANNABLE)
                         }
-                    tv.id=ids.count()+1
+                    //tv.id=ids.count()+1
                     addView(tv)
-                    ids.add(0)
+                    //ids.add(0)
                 }
                 is MarkdownElement.Image -> {
                     val iv=MarkdownImageView(
