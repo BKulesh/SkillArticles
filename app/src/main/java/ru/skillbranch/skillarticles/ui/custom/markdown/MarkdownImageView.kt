@@ -195,7 +195,6 @@ class MarkdownImageView private constructor(
 
             }
         addView(tv_alt)
-
         iv_image.setOnClickListener{
             if (tv_alt?.isVisible==true) {
                                           (parent as MarkdownContentView).ids[id-1]=0
