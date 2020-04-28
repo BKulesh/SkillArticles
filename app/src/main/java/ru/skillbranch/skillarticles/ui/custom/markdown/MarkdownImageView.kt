@@ -3,6 +3,7 @@ package ru.skillbranch.skillarticles.ui.custom.markdown
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
+import android.os.Parcelable
 import android.text.Spannable
 import android.view.*
 import android.widget.ImageView
@@ -14,9 +15,16 @@ import androidx.core.animation.doOnEnd
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.isVisible
 import androidx.core.view.setPadding
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
+import com.google.android.material.badge.BadgeDrawable
+import com.google.android.material.navigation.NavigationView
 import ru.skillbranch.skillarticles.R
 import ru.skillbranch.skillarticles.extensions.attrValue
 import ru.skillbranch.skillarticles.extensions.dpToIntPx
@@ -52,6 +60,9 @@ class MarkdownImageView private constructor(
     val tv_title: MarkdownTextView
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     var tv_alt: TextView? = null
+
+    private var isOpen:Boolean=false
+    private var aspectRatio=0f
 
     @Px
     private val titleTopMargin: Int=context.dpToIntPx(8) //8dp
@@ -198,10 +209,12 @@ class MarkdownImageView private constructor(
         iv_image.setOnClickListener{
             if (tv_alt?.isVisible==true) {
                                           (parent as MarkdownContentView).ids[id-1]=0
+                                          isOpen=false
                                           animateHideAlt()
                                          }
                                 else {
                                       (parent as MarkdownContentView).ids[id-1]=1
+                                      isOpen=true
                                       animateShowAlt()
                                      }
             }
@@ -233,6 +246,32 @@ class MarkdownImageView private constructor(
         va.doOnEnd { tv_alt?.isVisible = false }
         va.start()
     }
+
+    override fun onSaveInstanceState(): Parcelable? {
+        val savedState= SavedState(super.onSaveInstanceState())
+        savedState.ssIsOpen=isOpen
+        savedState.ssAspectRatio=(iv_image.width.toFloat()/iv_image.height)
+        return savedState
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        super.onRestoreInstanceState(state)
+        if (state is SavedState) {
+            isOpen=state.ssIsOpen
+            aspectRatio=state.ssAspectRatio
+            tv_alt?.isVisible=isOpen
+        }
+    }
+}
+
+private class SavedState: View.BaseSavedState,Parcelable{
+    var ssIsOpen: Boolean=false
+    var ssAspectRatio=0f
+
+    constructor(superState: Parcelable?) {
+
+    }
+
 }
 
 
