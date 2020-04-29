@@ -423,12 +423,12 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
         override fun saveUI(outState: Bundle) {
             if (search_view == null) Log.e("Debug", "saveUI is NULL")
             outState.putBoolean(::isFocusedSearch.name, search_view?.hasFocus() ?: false)
-            outState.putIntegerArrayList("ids", tv_text_content.ids)
+            //outState.putIntegerArrayList("ids", tv_text_content.ids)
         }
 
         override fun restoreUI(savedState: Bundle) {
             isFocusedSearch = savedState.getBoolean(::isFocusedSearch.name)
-            tv_text_content.ids.clear()
+            /*tv_text_content.ids.clear()
             tv_text_content.ids.addAll(savedState.getIntegerArrayList("ids")!!)
             var i = 0
             tv_text_content.ids.forEach { value ->
@@ -447,7 +447,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
                         } else Log.e("Debug", "restoreUI view=null")
                 }
                 //if (search_view==null) Log.e("Debug","saveUI is NULL")
-            }
+            }*/
 
         }
     }

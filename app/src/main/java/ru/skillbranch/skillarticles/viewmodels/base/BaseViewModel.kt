@@ -4,10 +4,14 @@ import android.os.Bundle
 import android.view.View
 import androidx.annotation.UiThread
 import androidx.lifecycle.*
+import androidx.lifecycle.SavedStateHandle
 import ru.skillbranch.skillarticles.viewmodels.ArticleViewModel
 import java.lang.IllegalArgumentException
 
-abstract class BaseViewModel<T:IViewModelState>(initState:T): ViewModel(){
+abstract class BaseViewModel<T:IViewModelState>(
+   private val handleState: SavedStateHandle,
+   initState: T
+): ViewModel(){
     public val notifications= MutableLiveData<Event<Notify>>()
 
     public val state: MediatorLiveData<T> = MediatorLiveData<T>().apply{
@@ -51,13 +55,13 @@ abstract class BaseViewModel<T:IViewModelState>(initState:T): ViewModel(){
         }
     }
 
-    fun saveState(outState: Bundle){
-        currentState.save(outState)
+    fun saveState(){
+        currentState.save(handleState)
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun restoreState(savedState: Bundle){
-        state.value=currentState.restore(savedState) as T
+    fun restoreState(){
+        state.value=currentState.restore(handleState) as T
     }
 
 }

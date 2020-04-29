@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.core.os.bundleOf
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.SavedStateHandle
 import ru.skillbranch.skillarticles.data.AppSettings
 import ru.skillbranch.skillarticles.data.ArticleData
 import ru.skillbranch.skillarticles.data.ArticlePersonalInfo
@@ -19,7 +20,8 @@ import ru.skillbranch.skillarticles.viewmodels.base.BaseViewModel
 import ru.skillbranch.skillarticles.viewmodels.base.IViewModelState
 import ru.skillbranch.skillarticles.viewmodels.base.Notify
 
-class ArticleViewModel(private val articleId: String): BaseViewModel<ArticleState>(ru.skillbranch.skillarticles.viewmodels.ArticleState()){
+class ArticleViewModel(handle:SavedStateHandle,
+                       private val articleId: String): BaseViewModel<ArticleState>(handle,ArticleState()){
     private val repository =ArticleRepository
     private var clearContent: String?=null
 
@@ -211,25 +213,23 @@ data class ArticleState(
     val content: List<MarkdownElement> = emptyList(), // содержание
     val reviews: List<Any> = emptyList() // комментарии
 ): IViewModelState{
-    override fun save(outState: Bundle) {
+
+
+    override fun save(outState: SavedStateHandle) {
         Log.e("Debug","IViewModelState save $searchResults")
-        outState.putAll(
-            bundleOf(
-                "isSearch" to isSearch,
-                "searchQuery" to searchQuery,
-                "searchResults" to searchResults,
-                "searchPosition" to searchPosition
-            )
-        )
+                outState.set("isSearch" , isSearch)
+                outState.set("searchQuery" , searchQuery)
+                outState.set("searchResults" , searchResults)
+                outState.set("searchPosition" , searchPosition)
     }
 
-    override fun restore(savedState: Bundle): IViewModelState {
+    override fun restore(savedState: SavedStateHandle): IViewModelState {
         Log.e("Debug","IViewModelState restore ")
         return copy(
-            isSearch=savedState["isSearch"] as Boolean,
-            searchQuery = savedState["searchQuery"] as? String,
-            searchResults = savedState["searchResults"] as List<Pair<Int,Int>>,
-            searchPosition = savedState["searchPosition"] as Int
+            isSearch=savedState["isSearch"] ?: false,
+            searchQuery = savedState["searchQuery"],
+            searchResults = savedState["searchResults"] ?: emptyList(),
+            searchPosition = savedState["searchPosition"] ?: 0
         )
     }
 }

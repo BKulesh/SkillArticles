@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
 import android.util.AttributeSet
+import android.util.Log
 import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
@@ -27,7 +28,7 @@ class MarkdownContentView @JvmOverloads constructor(
     private var layoutManager: LayoutManager= LayoutManager()
 
     //for restore
-    public var ids = arrayListOf<Int>()
+    //public var ids = arrayListOf<Int>()
 
     var textSize by Delegates.observable(14f) {_,old,value->
         if (value==old) return@observable
@@ -81,7 +82,9 @@ class MarkdownContentView @JvmOverloads constructor(
     }
 
     fun setContent(content: List<MarkdownElement>) {
+        Log.e("Debug","View on setContent start")
         elements=content
+        var index=0
         content.forEach{
             when(it){
                 is MarkdownElement.Text->{
@@ -106,9 +109,11 @@ class MarkdownContentView @JvmOverloads constructor(
                         it.image.text,
                         it.image.alt
                     )
-                    iv.id=ids.count()+1
+                    //iv.id=ids.count()+1
                     addView(iv)
-                    ids.add(0)
+                    //ids.add(0)
+                    layoutManager.attacheToParent(iv,index)
+                    index++
                 }
                 is MarkdownElement.Scroll -> {
                     val sv=MarkdownCodeView(
@@ -116,12 +121,15 @@ class MarkdownContentView @JvmOverloads constructor(
                         textSize,
                         it.blockCode.text//,padding,padding.toFloat()
                     )
-                    sv.id=ids.count()+1
+                    //sv.id=ids.count()+1
                     addView(sv)
-                    ids.add(0)
+                    layoutManager.attacheToParent(sv,index)
+                    index++
+                    //ids.add(0)
                 }
             }
         }
+        Log.e("Debug","View on setContent finish")
     }
 
     fun renderSearchResult(searchResult: List<Pair<Int, Int>>) {
@@ -176,21 +184,29 @@ class MarkdownContentView @JvmOverloads constructor(
     override fun onSaveInstanceState(): Parcelable? {
         val state = SavedState(super.onSaveInstanceState())
         state.layout=layoutManager
+        Log.e("Debug","ContentView onSave ")
         return state
     }
 
     override fun onRestoreInstanceState(state: Parcelable?) {
+        Log.e("Debug","ContentView onRestore Satrt ")
         super.onRestoreInstanceState(state)
         if (state is SavedState) layoutManager=state.layout
-        children.filter { it is MarkdownTextView }
+        children.filter { it !is MarkdownTextView }
             .forEachIndexed {index,it-> layoutManager.attacheToParent(it,index) }
+        Log.e("Debug","ContentView onRestore Finish")
     }
 
     override fun dispatchSaveInstanceState(container: SparseArray<Parcelable>?) {
-        children.filter { it !is MarkdownImageView }
+        Log.e("Debug","ContentView onDispatchSave Start")
+        children.filter { it !is MarkdownTextView }
+            .forEachIndexed {index,it->layoutManager.attacheToParent(it,index) }
+        Log.e("Debug","ContentView onDispatchSave Middle")
+        children.filter { it !is MarkdownTextView }
             .forEach { it.saveHierarchyState(layoutManager.container) }
         //super.dispatchSaveInstanceState(container)
         dispatchFreezeSelfOnly(container)
+        Log.e("Debug","ContentView onDispatchSave Finish")
     }
 
     private class LayoutManager(): Parcelable {
@@ -212,8 +228,10 @@ class MarkdownContentView @JvmOverloads constructor(
             if (container.isEmpty()){
                 view.id= ViewCompat.generateViewId()
                 ids.add(view.id)
+                Log.e("Debug","View on add Id ${view.id} ")
             } else {
                 view.id=ids[index]
+                Log.e("Debug","View on set Id ${view.id} ")
                 view.restoreHierarchyState(container)
             }
         }
@@ -228,6 +246,8 @@ class MarkdownContentView @JvmOverloads constructor(
 
     private class SavedState: BaseSavedState,Parcelable{
         lateinit var layout: LayoutManager
+
+        constructor(superState: Parcelable?): super(superState)
 
         @Suppress("UNCHECKED_CAST")
         constructor(src: Parcel): super(src) {

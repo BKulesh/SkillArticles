@@ -50,9 +50,9 @@ abstract class BaseActivity<T:BaseViewModel<out IViewModelState>> : AppCompatAct
     //    super.onCreate(savedInstanceState, persistentState)
     //}
 
-    internal inline fun<reified T:ViewModel> provideViewModel(arg : Any?) :ViewModelDelegate<T>{
-        return ViewModelDelegate(T::class.java,arg)
-    }
+//    internal inline fun<reified T:ViewModel> provideViewModel(arg : Any?) :ViewModelDelegate<T>{
+//        return ViewModelDelegate(T::class.java,arg)
+//    }
 
 
 }

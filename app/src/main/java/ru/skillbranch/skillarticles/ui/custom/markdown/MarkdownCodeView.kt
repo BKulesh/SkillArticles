@@ -189,8 +189,8 @@ class MarkdownCodeView private constructor(
     private fun toggleColors() {
         isManual=true
         isDark=!isDark
-        if (isDark) (parent as MarkdownContentView).ids[id-1]=1
-        else (parent as MarkdownContentView).ids[id-1]=0
+        //if (isDark) (parent as MarkdownContentView).ids[id-1]=1
+        //else (parent as MarkdownContentView).ids[id-1]=0
 
         applyColors()
     }
@@ -202,19 +202,46 @@ class MarkdownCodeView private constructor(
         tv_codeView.setTextColor(textColor)
     }
 
+    override fun onSaveInstanceState(): Parcelable? {
+        val savedState=SavedState(super.onSaveInstanceState())
+        savedState.ssIsManual=isManual
+        savedState.ssIsDark=isDark
+        return savedState
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        super.onRestoreInstanceState(state)
+        if (state is SavedState) {
+            var ssIsManual=state.ssIsManual
+            var ssIsDark: Boolean=state.ssIsDark
+            applyColors()
+        }
+    }
+
     private class SavedState : BaseSavedState, Parcelable {
         var ssIsManual:Boolean=false
-        var isDark: Boolean=false
+        var ssIsDark: Boolean=false
 
         constructor(superState:Parcelable?):super(superState)
 
         constructor(src: Parcel): super(src) {
             ssIsManual=src.readInt()==1
-            isDark=src.readInt()==1
+            ssIsDark=src.readInt()==1
         }
 
-        override fun writeToParcel(dst: Parcel?, flags: Int) {
+        override fun writeToParcel(dst: Parcel, flags: Int) {
             super.writeToParcel(dst, flags)
+            dst.writeInt(if (ssIsManual) 1 else 0)
+            dst.writeInt(if (ssIsDark) 1 else 0)
+        }
+
+        override fun describeContents(): Int = 0
+
+        companion object CREATOR : Parcelable.Creator<SavedState> {
+            override fun createFromParcel(parcel: Parcel) = SavedState(parcel)
+
+            override fun newArray(size: Int): Array<SavedState?> = arrayOfNulls(size)
+
         }
 
     }
