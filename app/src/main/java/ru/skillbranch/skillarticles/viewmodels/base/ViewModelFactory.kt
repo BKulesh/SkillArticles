@@ -5,9 +5,8 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.savedstate.SavedStateRegistryOwner
-import ru.skillbranch.skillarticles.viewmodels.ArticleViewModel
+import ru.skillbranch.skillarticles.viewmodels.article.ArticleViewModel
 import java.lang.IllegalArgumentException
 
 class ViewModelFactory(
@@ -22,7 +21,7 @@ class ViewModelFactory(
     ): T {
         if (modelClass.isAssignableFrom(ArticleViewModel::class.java)) {
             return ArticleViewModel(
-                handle,params as String
+                handle, params as String
             ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")

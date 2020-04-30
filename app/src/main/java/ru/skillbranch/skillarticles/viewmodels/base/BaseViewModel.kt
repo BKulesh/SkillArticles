@@ -1,12 +1,8 @@
 package ru.skillbranch.skillarticles.viewmodels.base
 
-import android.os.Bundle
-import android.view.View
 import androidx.annotation.UiThread
 import androidx.lifecycle.*
 import androidx.lifecycle.SavedStateHandle
-import ru.skillbranch.skillarticles.viewmodels.ArticleViewModel
-import java.lang.IllegalArgumentException
 
 abstract class BaseViewModel<T:IViewModelState>(
    private val handleState: SavedStateHandle,

@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import ru.skillbranch.skillarticles.viewmodels.base.BaseViewModel
 import ru.skillbranch.skillarticles.viewmodels.base.IViewModelState
 import ru.skillbranch.skillarticles.viewmodels.base.Notify
-import ru.skillbranch.skillarticles.viewmodels.base.ViewModelDelegate
+//import ru.skillbranch.skillarticles.viewmodels.base.ViewModelDelegate
 
 abstract class BaseActivity<T:BaseViewModel<out IViewModelState>> : AppCompatActivity() {
     protected abstract val binding: Binding;
@@ -29,7 +29,7 @@ abstract class BaseActivity<T:BaseViewModel<out IViewModelState>> : AppCompatAct
 
     override fun onSaveInstanceState(outState: Bundle) {
         Log.e("Debug","lifeCircle onSaveInstanceState")
-        viewModel.saveState(outState)
+        viewModel.saveState()
         binding.saveUI(outState)
         super.onSaveInstanceState(outState)
     }
@@ -37,7 +37,7 @@ abstract class BaseActivity<T:BaseViewModel<out IViewModelState>> : AppCompatAct
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         Log.e("Debug","lifeCircle onRestoreInstanceState")
         super.onRestoreInstanceState(savedInstanceState)
-        viewModel.restoreState(savedInstanceState)
+        viewModel.restoreState()
         binding.restoreUI(savedInstanceState)
     }
 
