@@ -123,8 +123,8 @@ class MarkdownContentView @JvmOverloads constructor(
                     )
                     //sv.id=ids.count()+1
                     addView(sv)
-                    layoutManager.attacheToParent(sv,index)
-                    index++
+                    //layoutManager.attacheToParent(sv,index)
+                    //index++
                     //ids.add(0)
                 }
             }

@@ -14,6 +14,9 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
 //import android.widget.Toolbar
 import androidx.appcompat.widget.Toolbar
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_root.*
@@ -27,98 +30,36 @@ import ru.skillbranch.skillarticles.extensions.hideKeyboard
 import ru.skillbranch.skillarticles.ui.article.IArticleView
 import ru.skillbranch.skillarticles.ui.base.BaseActivity
 import ru.skillbranch.skillarticles.ui.base.Binding
-import ru.skillbranch.skillarticles.ui.delegates.ObserveProp
 import ru.skillbranch.skillarticles.ui.delegates.RenderProp
+import ru.skillbranch.skillarticles.viewmodels.RootViewModel
 import ru.skillbranch.skillarticles.viewmodels.article.ArticleState
 import ru.skillbranch.skillarticles.viewmodels.article.ArticleViewModel
 import ru.skillbranch.skillarticles.viewmodels.base.IViewModelState
 import ru.skillbranch.skillarticles.viewmodels.base.Notify
 import ru.skillbranch.skillarticles.viewmodels.base.ViewModelFactory
 
-class RootActivity : BaseActivity<ArticleViewModel>(),
-    IArticleView {
+class RootActivity : BaseActivity<RootViewModel>() {
+
     override val layout: Int = R.layout.activity_root
-    override val viewModel: ArticleViewModel by viewModels{
-        ViewModelFactory(
-            owner=this,
-            params="0"
-        )
-    }
+    override val viewModel: RootViewModel by viewModels()
+
     /*override val viewModel: ArticleViewModel by
     lazy{
         val vmFactory=ViewModelFactory("0")
         ViewModelProviders.of(this,vmFactory).get(ArticleViewModel::class.java)
     }*/
-    @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
-    public override val binding: ArticleBinding by lazy { ArticleBinding() }
+    //@VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
+    //public override val binding: ArticleBinding by lazy { ArticleBinding() }
 
 
-//    val bgColor by AttrValue(R.attr.colorSecondary)
-//    val fgColor by AttrValue(R.attr.colorOnSecondary)
 
-    override fun setupViews() {
+/*    override fun setupViews() {
         setupToolbar()
         setupBottomBar()
         setupSubMenu()
+    }*/
 
-        //scroll.addView(MarkdownImageView(this,14f,"https://www.nathab.com//uploaded-files/carousels/HERO/Alaska-North/Iceland-shutterstock_596465372.jpg".toString(),"Iceland","it is Iceland"))
-
-
-
-    }
 /*
-    override fun renderSearchResult(searchResult: List<Pair<Int, Int>>) {
-        /*Log.e("Debug","renderSearchResult before")
-        val content=tv_text_content.text as Spannable
-        tv_text_content.isVisible
-        Log.e("Debug","renderSearchResult after")
-        clearSearchResult()
-        //val bgColor= Color.RED
-        //val fgColor=Color.WHITE
-        //Log.e("Debug","renderSearchResult text="+tv_text_content.text)
-        searchResult.forEach{(start,end)->
-            content.setSpan(
-                SearchSpan(),
-                start,end,SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-        }
-
-        renderSearchPosition(0)*/
-    }
-
-    override fun renderSearchPosition(searchPosition: Int) {
-       /* val content=tv_text_content.text as Spannable
-
-        val spans=content.getSpans<SearchSpan>()
-        content.getSpans<SearchFocusSpan>().forEach { content.removeSpan(it) }
-
-        if (spans.isNotEmpty()){
-            val result=spans[searchPosition]
-            Selection.setSelection(content,content.getSpanStart(result))
-            content.setSpan(
-                SearchFocusSpan(),
-                content.getSpanStart(result),content.getSpanEnd(result),
-                SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-        }*/
-    }
-
-    override fun clearSearchResult() {
-        /*val content=tv_text_content.text as Spannable
-        content.getSpans<SearchSpan>()
-            .forEach { content.removeSpan(it) }*/
-    }
-*/
-    override fun showSearchBar() {
-        bottombar.setSearchState(true)
-        //scroll.setMarginOptionally(dpToIntPx(56))
-    }
-
-    override fun hideSearchBar() {
-        bottombar.setSearchState(false)
-        //scroll.setMarginOptionally(dpToIntPx(0))
-    }
-
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_search,menu)
         val menuItem=menu?.findItem(R.id.action_search)
@@ -166,11 +107,28 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
 
 
         return super.onCreateOptionsMenu(menu)
+    }*/
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val appbarConfiguration: AppBarConfiguration= AppBarConfiguration(
+            setOf(
+                R.id.nav_articles,
+                R.id.nav_bookmarks,
+                R.id.nav_transcriptions,
+                R.id.nav_profile
+            )
+        )
+
+        setupActionBarWithNavController(navController,appbarConfiguration)
+        nav_view.setupWithNavController(navController)
+
     }
 
     override fun renderNotification(notify: Notify){
         val snackbar=Snackbar.make(coordinator_container,notify.message,Snackbar.LENGTH_LONG)
-            snackbar.setAnchorView(bottombar)
+            //snackbar.setAnchorView(bottombar)
             snackbar.setActionTextColor(getColor(R.color.color_accent_dark))
 
         when (notify){
@@ -194,6 +152,13 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
 
     }
 
+    override fun subscribeOnState(state: IViewModelState) {
+        //Do something
+    }
+
+
+
+/*
     private fun setupSubMenu() {
         btn_text_up.setOnClickListener{ viewModel.handleUpText() }
         btn_text_down.setOnClickListener{ viewModel.handleDownText() }
@@ -225,7 +190,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
             viewModel.handleSearchMode(false)
             invalidateOptionsMenu()
         }
-    }
+    }*/
 
     /*
     private fun renderUi(data:ArticleState){
@@ -273,7 +238,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
 
     }*/
 
-
+/*
     private fun setupToolbar() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -413,14 +378,14 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
             searchResults = data.searchResults
         }
 
-        override fun saveUI(outState: Bundle) {
-            if (search_view == null) Log.e("Debug", "saveUI is NULL")
-            outState.putBoolean(::isFocusedSearch.name, search_view?.hasFocus() ?: false)
+//        override fun saveUI(outState: Bundle) {
+//            if (search_view == null) Log.e("Debug", "saveUI is NULL")
+//            outState.putBoolean(::isFocusedSearch.name, search_view?.hasFocus() ?: false)
             //outState.putIntegerArrayList("ids", tv_text_content.ids)
-        }
+//        }
 
-        override fun restoreUI(savedState: Bundle) {
-            isFocusedSearch = savedState.getBoolean(::isFocusedSearch.name)
+//        override fun restoreUI(savedState: Bundle) {
+//            isFocusedSearch = savedState.getBoolean(::isFocusedSearch.name)
             /*tv_text_content.ids.clear()
             tv_text_content.ids.addAll(savedState.getIntegerArrayList("ids")!!)
             var i = 0
@@ -442,8 +407,8 @@ class RootActivity : BaseActivity<ArticleViewModel>(),
                 //if (search_view==null) Log.e("Debug","saveUI is NULL")
             }*/
 
-        }
-    }
+//        }
+    }*/
 
 }
 

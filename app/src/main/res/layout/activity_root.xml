@@ -23,22 +23,26 @@
         app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
         android:elevation="4dp"/>
     </com.google.android.material.appbar.AppBarLayout>
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scroll"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
-        <ru.skillbranch.skillarticles.ui.custom.markdown.MarkdownContentView
-            android:id="@+id/tv_text_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:focusable="true"
-            android:clipToPadding="false"
-            android:focusableInTouchMode="true" />
-    </androidx.core.widget.NestedScrollView>
 
-    <ru.skillbranch.skillarticles.ui.custom.ArticleSubmenu
+    <fragment
+        android:id="@+id/nav_host_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/mobile_navigation"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+    />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_gravity="bottom"
+        app.layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
+        app:menu="@menu/bottom_nav_menu"/>
+
+<!--    <ru.skillbranch.skillarticles.ui.custom.ArticleSubmenu
         android:id="@+id/submenu"
         android:theme="@style/ArticleBarsTheme"
         android:layout_width="200dp"
@@ -56,5 +60,5 @@
         android:layout_gravity="bottom"
         android:theme="@style/ArticleBarsTheme"
         android:elevation="4dp"
-        app:layout_insetEdge="bottom"/>
+        app:layout_insetEdge="bottom"/> !-->
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

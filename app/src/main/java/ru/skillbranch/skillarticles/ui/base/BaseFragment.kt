@@ -34,6 +34,7 @@ abstract class BaseFragment<T: BaseViewModel<out IViewModelState>>: Fragment() {
         viewModel.observeState(viewLifecycleOwner){
             binding?.bind(it)
         }
+        if  (binding?.isInFlated==false) binding?.onFinishInFlate()
 
         viewModel.observeNotifications(viewLifecycleOwner) {
             root.renderNotification(it)
@@ -46,6 +47,13 @@ abstract class BaseFragment<T: BaseViewModel<out IViewModelState>>: Fragment() {
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
         binding?.rebind()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        viewModel.saveState()
+        binding?.saveUI(outState)
+
+        super.onSaveInstanceState(outState)
     }
 
 

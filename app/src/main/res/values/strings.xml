@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">Coordinator</string>
+    <string name="title_articles">Articles</string>
+    <string name="title_bookmarks">Bookmarks</string>
+    <string name="title_transcriptions">Transcriptions</string>
+    <string name="title_profile">Profile</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 

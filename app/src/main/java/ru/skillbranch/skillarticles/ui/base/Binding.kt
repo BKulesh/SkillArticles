@@ -8,11 +8,23 @@ import kotlin.reflect.KProperty
 
 abstract class Binding {
     val delegates= mutableMapOf<String,RenderProp<out Any>>()
+    var isInFlated=false
 
-    abstract fun onFininishInflate()
+    open  val afterInFlated:(()->Unit)?=null
+    fun onFinishInFlate(){
+        if (!isInFlated) {
+            afterInFlated?.invoke()
+            isInFlated=true
+        }
+    }
+    //abstract fun onFininishInflate()
     abstract fun bind(data:IViewModelState)
-    abstract fun saveUI(outState: Bundle)
-    abstract fun restoreUI(savedState: Bundle?)
+    open fun saveUI(outState: Bundle) {
+
+    }
+    open fun restoreUI(savedState: Bundle?) {
+
+    }
 
     fun <A,B,C,D>dependsOn(vararg fields:KProperty<*>,onChange:(A,B,C,D)->Unit){
         check(fields.size==4) {"Names size must be 4, current ${fields.size} "}
@@ -31,6 +43,6 @@ abstract class Binding {
     }
 
     fun rebind() {
-        TODO("Not yet implemented")
+        delegates.forEach{it.value.bind()}
     }
 }

@@ -4,15 +4,31 @@ import ru.skillbranch.skillarticles.ui.base.Binding
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-class RenderProp<T>(
+class RenderProp<T: Any>(
     var value: T,
-    needInit: Boolean=true,
+    private val needInit: Boolean=true,
     private val onChange:((T)->Unit)?=null
 ):ReadWriteProperty<Binding,T>{
     private val listeners:MutableList<()->Unit> = mutableListOf()
-    init{
-        if(needInit) onChange?.invoke(value)
+
+    fun bind(){
+        if (needInit) onChange?.invoke(value)
     }
+
+
+    operator fun provideDelegate(
+        thisRef: Binding,
+        property: KProperty<*>
+    ):ReadWriteProperty<Binding,T>{
+        val delegate=RenderProp(value,true,onChange)
+        registerDelegate(thisRef,property.name,delegate)
+        return delegate
+    }
+
+
+/*    init{
+        if(needInit) onChange?.invoke(value)
+    }*/
 
     override fun getValue(thisRef: Binding, property: KProperty<*>): T = value
     override fun setValue(thisRef: Binding, property: KProperty<*>, value: T) {
@@ -26,8 +42,16 @@ class RenderProp<T>(
         listeners.add(listener)
     }
 
+
+    private fun registerDelegate(thisRef: Binding,name:String,delegate:RenderProp<T>){
+        thisRef.delegates[name]=delegate
+    }
+
+
 }
 
+
+/*
 class ObserveProp<T:Any>(private var value:T, private val onChange: ((T) -> Unit)?=null){
     operator fun provideDelegate(
         thisRef: Binding,
@@ -43,3 +67,4 @@ class ObserveProp<T:Any>(private var value:T, private val onChange: ((T) -> Unit
     }
 
 }
+*/
