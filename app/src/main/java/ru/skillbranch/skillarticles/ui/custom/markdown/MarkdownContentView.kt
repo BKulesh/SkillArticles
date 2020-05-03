@@ -123,8 +123,8 @@ class MarkdownContentView @JvmOverloads constructor(
                     )
                     //sv.id=ids.count()+1
                     addView(sv)
-                    //layoutManager.attacheToParent(sv,index)
-                    //index++
+                    layoutManager.attacheToParent(sv,index)
+                    index++
                     //ids.add(0)
                 }
             }
@@ -189,12 +189,12 @@ class MarkdownContentView @JvmOverloads constructor(
     }
 
     override fun onRestoreInstanceState(state: Parcelable?) {
-        Log.e("Debug","ContentView onRestore Satrt ")
+        //Log.e("Debug","ContentView onRestore Satrt ")
         super.onRestoreInstanceState(state)
         if (state is SavedState) layoutManager=state.layout
-        children.filter { it !is MarkdownTextView }
-            .forEachIndexed {index,it-> layoutManager.attacheToParent(it,index) }
-        Log.e("Debug","ContentView onRestore Finish")
+        //children.filter { it !is MarkdownTextView }
+        //    .forEachIndexed {index,it-> layoutManager.attacheToParent(it,index) }
+        //Log.e("Debug","ContentView onRestore Finish")
     }
 
     override fun dispatchSaveInstanceState(container: SparseArray<Parcelable>?) {
